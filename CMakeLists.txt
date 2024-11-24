@@ -3,13 +3,14 @@ cmake_minimum_required(VERSION 3.16)
 project(LocalSplits VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Quick)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appLocalSplits
-    main.cpp
+    main.cpp Resources.qrc
 )
 
 qt_add_qml_module(appLocalSplits
@@ -17,7 +18,36 @@ qt_add_qml_module(appLocalSplits
     VERSION 1.0
     QML_FILES
         Main.qml
+        RESOURCES
+        QML_FILES
+        RESOURCES
+        RESOURCES
+    QML_FILES Components/Fonts/OpenSans.qml
+    RESOURCES Components/Fonts/qmldir
+    RESOURCES Resources.qrc
 )
+
+#qt_add_resources(appLocalSplits
+#        openSansBold
+#        FILES
+#        fonts/OpenSans-Bold.ttf
+#)
+
+#qt_add_resources(appLocalSplits
+#        fonts
+#        FILES
+#        fonts/OpenSans-Bold.ttf
+#        fonts/OpenSans-BoldItalic.ttf
+#        fonts/OpenSans-Italic.ttf
+#        fonts/OpenSans-Light.ttf
+#        fonts/OpenSans-LightItalic.ttf
+#        fonts/OpenSans-Medium.ttf
+#        fonts/OpenSans-MediumItalic.ttf
+#        fonts/OpenSans-Regular.ttf
+#        fonts/OpenSans-SemiBold.ttf
+#        fonts/OpenSans-SemiBoldItalic.ttf
+#)
+
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
