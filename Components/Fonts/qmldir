@@ -1,0 +1,2 @@
+module Fonts
+singleton OpenSans 1.0 OpenSans.qml
