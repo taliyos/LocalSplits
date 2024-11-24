@@ -14,7 +14,7 @@ Window {
     Page {
         id: _main
         anchors.fill: parent
-        padding: 2
+        padding: 8
 
         ColumnLayout {
             id: _title
@@ -23,7 +23,6 @@ Window {
             anchors.top: parent.top
             anchors.topMargin: 0
             spacing: 2
-            antialiasing: false
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillHeight: true
 
@@ -34,10 +33,12 @@ Window {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 wrapMode: Text.NoWrap
-                anchors.horizontalCenter: _runCategory.horizontalCenter
-                font.pointSize: 12
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillWidth: true
+
+                font.family: OpenSans.family
+                font.styleName: OpenSans.bold
+                font.pointSize: 12
             }
 
             Label {
@@ -47,8 +48,8 @@ Window {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 wrapMode: Text.NoWrap
-                font.styleName: "Italic"
-                font.family: "Open Sans"
+                font.family: OpenSans.family
+                font.styleName: OpenSans.bold
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillWidth: true
             }
@@ -61,6 +62,9 @@ Window {
                 wrapMode: Text.NoWrap
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
+
+                font.family: OpenSans.family
+                font.styleName: OpenSans.italic
             }
         }
 
@@ -71,7 +75,7 @@ Window {
             anchors.bottom: _timer.top
         }
 
-        ColumnLayout {
+        RowLayout {
             id: _timer
             width: parent.width
             height: 100
@@ -80,12 +84,14 @@ Window {
 
             Label {
                 id: _runTimer
-                text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:28pt; font-weight:700;\">00:00:00</span><span style=\" font-size:20pt; font-weight:700;\">.00</span></p></body></html>"
-                font.pixelSize: 12
+                text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Open Sans ExtraBold'; font-size:32pt;\">00:00:00</span><span style=\" font-family:'Open Sans ExtraBold'; font-size:24pt;\">.00</span></p></body></html>"
+                font.pointSize: 28
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 textFormat: Text.RichText
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                font.styleName: OpenSans.extraBold
+                font.family: OpenSans.family
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
@@ -101,30 +107,27 @@ Window {
             Label {
                 id: _previousSegmentLabel
                 text: qsTr("Previous Segment")
-                font.bold: true
-                font.pixelSize: 12
                 verticalAlignment: Text.AlignVCenter
 
                 Layout.fillHeight: true
+
+                font.pointSize: 10
+                font.family: OpenSans.family
+                font.styleName: OpenSans.bold
             }
 
             Label {
                 id: _previousSegmentTime
                 text: qsTr("-")
-                font.bold: true
-                font.pixelSize: 12
                 verticalAlignment: Text.AlignVCenter
 
                 anchors.right: parent.right
                 Layout.fillHeight: true
+
+                font.pointSize: 10
+                font.family: OpenSans.family
+                font.styleName: OpenSans.bold
             }
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0}D{i:6;locked:true}
-}
-##^##*/
-
