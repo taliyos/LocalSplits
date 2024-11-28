@@ -25,29 +25,14 @@ qt_add_qml_module(appLocalSplits
     QML_FILES Components/Fonts/OpenSans.qml
     RESOURCES Components/Fonts/qmldir
     RESOURCES Resources.qrc
+    SOURCES Components/SplitLayoutParsing/layoutparser.cpp Components/SplitLayoutParsing/layoutparser.h   Components/SplitLayoutParsing/splitsegment.h Components/SplitLayoutParsing/splittime.h
+    SOURCES Components/SplitLayoutParsing/timemethod.h
+    SOURCES Components/SplitLayoutParsing/segmenttime.h
+    SOURCES Components/SplitLayoutParsing/splitplatform.h
+    SOURCES Components/SplitLayoutParsing/splitmetadata.h
+    SOURCES Components/SplitLayoutParsing/splitattempt.h
+    SOURCES Components/SplitLayoutParsing/splitlayout.h
 )
-
-#qt_add_resources(appLocalSplits
-#        openSansBold
-#        FILES
-#        fonts/OpenSans-Bold.ttf
-#)
-
-#qt_add_resources(appLocalSplits
-#        fonts
-#        FILES
-#        fonts/OpenSans-Bold.ttf
-#        fonts/OpenSans-BoldItalic.ttf
-#        fonts/OpenSans-Italic.ttf
-#        fonts/OpenSans-Light.ttf
-#        fonts/OpenSans-LightItalic.ttf
-#        fonts/OpenSans-Medium.ttf
-#        fonts/OpenSans-MediumItalic.ttf
-#        fonts/OpenSans-Regular.ttf
-#        fonts/OpenSans-SemiBold.ttf
-#        fonts/OpenSans-SemiBoldItalic.ttf
-#)
-
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
