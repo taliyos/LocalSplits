@@ -3,7 +3,6 @@
 #include <QDebug>
 
 #include "Components/SplitLayoutParsing/layoutparser.h"
-#include "windows.h"
 
 int main(int argc, char *argv[])
 {
