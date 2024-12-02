@@ -25,6 +25,8 @@ qt_add_qml_module(appLocalSplits
     QML_FILES Components/Fonts/OpenSans.qml
     RESOURCES Components/Fonts/qmldir
     RESOURCES Resources.qrc
+    SOURCES
+    SOURCES timer.h timer.cpp
 )
 
 #qt_add_resources(appLocalSplits
