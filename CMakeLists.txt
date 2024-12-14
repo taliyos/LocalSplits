@@ -11,6 +11,11 @@ qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appLocalSplits
     main.cpp Resources.qrc
+        Components/Split/splitmodel.cpp
+        Components/Split/splitmodel.h
+        Components/Split/splititem.h
+        Components/SplitList/SplitList.cpp
+        Components/SplitList/SplitList.h
 )
 
 qt_add_qml_module(appLocalSplits
@@ -18,9 +23,6 @@ qt_add_qml_module(appLocalSplits
     VERSION 1.0
     QML_FILES
         Main.qml
-        RESOURCES
-        QML_FILES
-        RESOURCES
         RESOURCES
     QML_FILES Components/Fonts/OpenSans.qml
     RESOURCES Components/Fonts/qmldir
@@ -32,6 +34,17 @@ qt_add_qml_module(appLocalSplits
     SOURCES Components/SplitLayoutParsing/splitmetadata.h
     SOURCES Components/SplitLayoutParsing/splitattempt.h
     SOURCES Components/SplitLayoutParsing/splitlayout.h
+    SOURCES Components/SplitRow/splitrowmodel.h Components/SplitRow/splitrowmodel.cpp
+    RESOURCES
+        Components/SplitRow/qmldir
+        Components/SplitList/qmldir
+        Components/EditableLabel/qmldir
+    QML_FILES
+        Components/SplitRow/SplitRow.qml
+        Components/SplitList/SplitList.qml
+        Components/EditableLabel/EditableLabel.qml
+
+
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

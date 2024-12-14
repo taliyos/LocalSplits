@@ -183,7 +183,7 @@ void LayoutParser::parseSegments(QXmlStreamReader* xmlReader, SplitLayout* split
 }
 
 void LayoutParser::parseSegment(QXmlStreamReader* xmlReader, SplitLayout* splitLayout) {
-    SplitSegment segment;
+    SplitSegment* segment = new SplitSegment();
 
     qDebug() << "Parse Segment!";
 
@@ -192,16 +192,16 @@ void LayoutParser::parseSegment(QXmlStreamReader* xmlReader, SplitLayout* splitL
 
         if (token == QXmlStreamReader::StartElement) {
             if (QString::compare(xmlReader->name(), "Name", Qt::CaseInsensitive) == 0) {
-                readStringProperty(segment.name, xmlReader);
+                readStringProperty(segment->name, xmlReader);
             }
             else if (QString::compare(xmlReader->name(), "SplitTimes", Qt::CaseInsensitive) == 0) {
-                parseSplitTimes(xmlReader, segment);
+                parseSplitTimes(xmlReader, *segment);
             }
             else if (QString::compare(xmlReader->name(), "BestSegmentTime", Qt::CaseInsensitive) == 0) {
-                parseSegmentTime(xmlReader, segment.bestSegmentTime, "BestSegmentTime");
+                parseSegmentTime(xmlReader, segment->bestSegmentTime, "BestSegmentTime");
             }
             else if (QString::compare(xmlReader->name(), "SegmentHistory", Qt::CaseInsensitive) == 0) {
-                parseSegmentHistory(xmlReader, segment);
+                parseSegmentHistory(xmlReader, *segment);
             }
         }
         else if (token == QXmlStreamReader::EndElement) {
@@ -210,6 +210,7 @@ void LayoutParser::parseSegment(QXmlStreamReader* xmlReader, SplitLayout* splitL
             }
         }
     }
+    splitLayout->segments.append(segment);
 }
 
 void LayoutParser::parseSplitTimes(QXmlStreamReader* xmlReader, SplitSegment& splitSegment) {

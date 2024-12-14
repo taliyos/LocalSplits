@@ -1,14 +1,33 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QDebug>
 
+#include "Components/Split/splitmodel.h"
 #include "Components/SplitLayoutParsing/layoutparser.h"
+#include "Components/SplitList/splitlist.h"
+#include "Components/SplitRow/splitrowmodel.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    qmlRegisterType<SplitModel>("com.localsplits", 1, 0, "SplitModel");
+    qmlRegisterUncreatableType<SplitList>("com.localsplits", 1, 0, "SplitList", QStringLiteral("SplitList should not be created in QML"));
+
+    SplitLayout* splitLayout = LayoutParser::readLayout("D:\\Projects\\LocalSplits\\tests\\testLayout.lss");
+
+    SplitList splitList;
+
+    for (int i = 0; i < splitLayout->segments.size(); i++) {
+        SplitSegment* segment = splitLayout->segments.at(i);
+        splitList.addItem(segment->name, "-");
+    }
+
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty(QStringLiteral("gameName"), QVariant(splitLayout->gameName));
+    engine.rootContext()->setContextProperty(QStringLiteral("splitList"), &splitList);
+
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,
@@ -16,8 +35,6 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
     engine.loadFromModule("LocalSplits", "Main");
-
-    SplitLayout* splitLayout = LayoutParser::readLayout("");
 
     delete splitLayout;
 
