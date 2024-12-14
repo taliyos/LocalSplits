@@ -28,9 +28,5 @@ private:
     int elapsedTime;
 };
 
-
-// bolt.new and replit.agent (AI coding) liam.ottley video on AI agents.
-//chatp gpt relevance for(ai agents), zapier and make.com, promptmetheus (prompts), postman (api integraitons)
-
 #endif // TIMER_H
 
