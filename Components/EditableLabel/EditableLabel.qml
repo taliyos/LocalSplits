@@ -21,6 +21,7 @@ MouseArea {
         if (isClicked) {
             edit.forceActiveFocus()
             edit.cursorPosition = edit.length
+            edit.selectAll()
         }
     }
 
