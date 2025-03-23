@@ -1,7 +1,9 @@
-#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
+#include <QDir>
+#include <QQmlEngine>
+#include <QQuickView>
 
 #include "Components/Split/splitmodel.h"
 #include "Components/SplitLayoutParsing/layoutparser.h"
@@ -17,16 +19,16 @@ int main(int argc, char *argv[])
 
     SplitLayout* splitLayout = LayoutParser::readLayout("D:\\Projects\\LocalSplits\\tests\\testLayout.lss");
 
-    SplitList splitList;
+    SplitList* splitList = new SplitList();
 
     for (int i = 0; i < splitLayout->segments.size(); i++) {
         SplitSegment* segment = splitLayout->segments.at(i);
-        splitList.addItem(segment->name, "-");
+        splitList->addItem(segment->name, "-");
     }
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("gameName"), QVariant(splitLayout->gameName));
-    engine.rootContext()->setContextProperty(QStringLiteral("splitList"), &splitList);
+    engine.rootContext()->setContextProperty(QStringLiteral("splitList"), splitList);
 
     QObject::connect(
         &engine,
@@ -37,6 +39,8 @@ int main(int argc, char *argv[])
     engine.loadFromModule("LocalSplits", "Main");
 
     delete splitLayout;
+
+    QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, [] {onAppExit();}, Qt::QueuedConnection);
 
     return app.exec();
 }

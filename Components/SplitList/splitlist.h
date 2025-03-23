@@ -10,10 +10,11 @@ class SplitList : public QObject {
 
 public:
     explicit SplitList(QObject* parent = nullptr);
+    ~SplitList() override;
 
-    QVector<SplitItem> items() const;
+    QVector<SplitItem*> items() const;
 
-    bool setItemAt(int index, const SplitItem& item);
+    bool setItemAt(int index, SplitItem* item);
 
 signals:
     void preItemAppended();
@@ -28,7 +29,7 @@ public slots:
     void removeItem(int index);
 
 private:
-    QVector<SplitItem> m_items;
+    QVector<SplitItem*> m_items;
 };
 
 

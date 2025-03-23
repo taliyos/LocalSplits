@@ -5,18 +5,16 @@ SplitModel::SplitModel(QObject *parent) : QAbstractListModel(parent) {
 
     std::vector<QString> tempSplits = {"Chauncey", "Boo Release", "Fire", "Water", "Bogmire", "Ice", "Moonshot", "Clairvoya Entry", "Boolossus", "Uncle Grimmly", "Rooftop", "Weston", "Forgor", "King Boo"};
 
+    // Used only for creating and showing temporary splits when no splits are provided.
     m_splits = new SplitList(this);
-
     for (int i = 0; i < tempSplits.size(); i++) {
-        SplitItem item;
-        item.name = tempSplits[i];
-        item.time = "-";
-        m_splits->items().append(item);
+        m_splits->addItem(tempSplits[i], "-");
     }
 }
 
 SplitModel::~SplitModel() {
-    if (m_splits) delete m_splits;
+    delete m_splits;
+    m_splits = nullptr;
 }
 
 SplitList* SplitModel::splits() const {
@@ -26,7 +24,7 @@ SplitList* SplitModel::splits() const {
 void SplitModel::setSplits(SplitList* splits) {
     beginResetModel();
     if (splits == m_splits) return;
-    if (m_splits) delete m_splits;
+    delete m_splits;
     m_splits = splits;
     endResetModel();
 }
@@ -40,13 +38,13 @@ QVariant SplitModel::data(const QModelIndex &index, int role) const {
         return {};
     }
 
-    SplitItem item = m_splits->items().at(index.row());
+    SplitItem* item = m_splits->items().at(index.row());
 
     switch ((Role) role) {
         case NameRole:
-            return QVariant{item.name};
+            return QVariant{item->name};
         case TimeRole:
-            return QVariant{item.time};
+            return QVariant{item->time};
     }
 }
 

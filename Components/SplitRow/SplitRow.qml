@@ -43,10 +43,12 @@ Rectangle {
             Layout.leftMargin: 4
 
             onEditFinished: (editedText) => {
+                console.log("name edit finished")
                 split.nameEditFinished(editedText)
             }
 
             onTabPressed: {
+                console.log("name edit tab out")
                 splitTime.startEdit()
             }
         }
@@ -62,10 +64,12 @@ Rectangle {
             Layout.minimumWidth: getChildWidth()
 
             onEditFinished: (editedText) => {
+                console.log("time edit finished")
                 split.timeEditFinished(editedText)
             }
 
             onTabPressed: {
+                console.log("time edit tab out")
                 splitName.startEdit()
             }
         }

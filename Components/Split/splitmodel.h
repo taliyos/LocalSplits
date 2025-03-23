@@ -1,7 +1,6 @@
 #ifndef SPLITSMODEL_H
 #define SPLITSMODEL_H
 
-#include <QAbstractListModel>
 #include "../SplitRow/splitrowmodel.h"
 #include "../SplitList/splitlist.h"
 

@@ -185,8 +185,6 @@ void LayoutParser::parseSegments(QXmlStreamReader* xmlReader, SplitLayout* split
 void LayoutParser::parseSegment(QXmlStreamReader* xmlReader, SplitLayout* splitLayout) {
     SplitSegment* segment = new SplitSegment();
 
-    qDebug() << "Parse Segment!";
-
     while (!xmlReader->atEnd() && !xmlReader->hasError()) {
         QXmlStreamReader::TokenType token = xmlReader->readNext();
 
