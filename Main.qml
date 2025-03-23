@@ -13,7 +13,7 @@ Window {
     visible: true
     title: qsTr("LocalSplits")
 
-    Page {
+    Pane {
         id: _main
         anchors.fill: parent
         padding: 4
@@ -116,5 +116,8 @@ Window {
                 color: "#00000000"
             }
         }
+    }
+
+    onClosing: {
     }
 }
