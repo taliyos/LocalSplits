@@ -30,7 +30,7 @@ MouseArea {
         else return label.contentWidth;
     }
 
-    onClicked: {
+    onDoubleClicked: {
         startEdit()
     }
 
@@ -76,18 +76,22 @@ MouseArea {
         }
 
         Keys.onPressed: event => {
-                            if (event.key === Qt.Key_Enter
-                                || event.key === Qt.Key_Return) {
-                                event.accepted = true
-                                focus = false
-                                parent.editFinshed(text)
-                            }
+            if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                event.accepted = true
+                focus = false
+            }
+            else if (event.key === Qt.Key_Tab) {
+                event.accepted = true
+                focus = false
+                parent.tabPressed()
+            }
+            else if (event.key === Qt.Key_Escape) {
+                event.accepted = true
+                text = parent.text
+                focus = false
+            }
 
-                            if (event.key === Qt.Key_Tab) {
-                                event.accepted = true
-                                focus = false
-                                parent.tabPressed()
-                            }
-                        }
+
+        }
     }
 }
