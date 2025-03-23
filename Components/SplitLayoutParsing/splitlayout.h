@@ -15,7 +15,7 @@ struct SplitLayout {
     QString offset;
     int attemptCount;
     QList<SplitAttempt> attemptHistory;
-    QList<SplitSegment> segments;
+    QList<SplitSegment*> segments;
 };
 
 #endif // SPLITLAYOUT_H

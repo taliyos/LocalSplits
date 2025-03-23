@@ -3,6 +3,8 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import "Components/Fonts"
+import "Components/SplitList"
+import "Components/SplitRow"
 
 Window {
     id: window
@@ -11,123 +13,111 @@ Window {
     visible: true
     title: qsTr("LocalSplits")
 
-    Page {
+    Pane {
         id: _main
         anchors.fill: parent
-        padding: 8
+        padding: 4
 
         ColumnLayout {
-            id: _title
             width: parent.width
-            height: 40
-            anchors.top: parent.top
-            anchors.topMargin: 0
-            spacing: 2
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            Layout.fillHeight: true
+            height: parent.height
 
-            Label {
-                id: _titleText
-                text: qsTr("Luigi's Mansion")
-
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                wrapMode: Text.NoWrap
-                Layout.alignment: Qt.AlignHCenter
+            ColumnLayout {
+                id: _title
+                width: parent.width
+                spacing: 2
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
+                Layout.fillHeight: true
 
-                font.family: OpenSans.family
-                font.styleName: OpenSans.bold
-                font.pointSize: 12
+                Label {
+                    id: _titleText
+                    text: gameName
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    wrapMode: Text.WordWrap
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.fillWidth: true
+
+                    font.family: OpenSans.family
+                    font.styleName: OpenSans.bold
+                    font.pointSize: 12
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.minimumHeight: childrenRect.height
+                    Label {
+                        id: _runCategory
+                        text: qsTr("Any%")
+                        font.pixelSize: 10
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: OpenSans.family
+                        font.styleName: OpenSans.bold
+
+                        anchors.centerIn: parent
+                    }
+
+                    Label {
+                        id: _attemptCounter
+                        text: qsTr("0")
+                        font.pixelSize: 12
+                        font.bold: false
+                        wrapMode: Text.NoWrap
+
+                        font.family: OpenSans.family
+                        font.styleName: OpenSans.italic
+
+                        anchors.right: parent.right
+                    }
+                }
             }
 
-            Label {
-                id: _runCategory
-                text: qsTr("Any%")
-                font.pixelSize: 10
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                wrapMode: Text.NoWrap
-                font.family: OpenSans.family
-                font.styleName: OpenSans.bold
-                Layout.alignment: Qt.AlignHCenter
-                Layout.fillWidth: true
-            }
+            SplitList {
+                id: allSplits
 
-            Label {
-                id: _attemptCounter
-                text: qsTr("0")
-                font.pixelSize: 12
-                font.bold: false
-                wrapMode: Text.NoWrap
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-
-                font.family: OpenSans.family
-                font.styleName: OpenSans.italic
-            }
-        }
-
-        ColumnLayout {
-            id: _splits
-            width: parent.width
-            anchors.top: _title.bottom
-            anchors.bottom: _timer.top
-        }
-
-        RowLayout {
-            id: _timer
-            width: parent.width
-            height: 100
-
-            anchors.bottom: _previousSegment.top
-
-            Label {
-                id: _runTimer
-                text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Open Sans ExtraBold'; font-size:32pt;\">00:00:00</span><span style=\" font-family:'Open Sans ExtraBold'; font-size:24pt;\">.00</span></p></body></html>"
-                font.pointSize: 28
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                textFormat: Text.RichText
-                font.styleName: OpenSans.extraBold
-                font.family: OpenSans.family
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                width: parent.width
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
-        }
 
-        RowLayout {
-            id: _previousSegment
-            width: parent.width
-            height: 25
+            RowLayout {
+                id: _timer
+                width: parent.width
 
-            anchors.bottom: parent.bottom
+                Layout.alignment: Qt.AlignBottom
+                Layout.maximumHeight: 75
+                Layout.minimumHeight: 75
 
-            Label {
-                id: _previousSegmentLabel
-                text: qsTr("Previous Segment")
-                verticalAlignment: Text.AlignVCenter
-
-                Layout.fillHeight: true
-
-                font.pointSize: 10
-                font.family: OpenSans.family
-                font.styleName: OpenSans.bold
+                Label {
+                    id: _runTimer
+                    text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Open Sans ExtraBold'; font-size:32pt;\">00:00:00</span><span style=\" font-family:'Open Sans ExtraBold'; font-size:24pt;\">.00</span></p></body></html>"
+                    font.pointSize: 28
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    textFormat: Text.RichText
+                    font.styleName: OpenSans.extraBold
+                    font.family: OpenSans.family
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                }
             }
 
-            Label {
-                id: _previousSegmentTime
-                text: qsTr("-")
-                verticalAlignment: Text.AlignVCenter
+            SplitRow {
+                id: previousSegment
 
-                anchors.right: parent.right
-                Layout.fillHeight: true
+                name: "Previous Segment"
+                time: "-"
 
-                font.pointSize: 10
-                font.family: OpenSans.family
-                font.styleName: OpenSans.bold
+                color: "#00000000"
             }
         }
+    }
+
+    onClosing: {
     }
 }

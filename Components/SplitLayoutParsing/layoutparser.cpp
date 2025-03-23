@@ -31,7 +31,6 @@ SplitLayout* LayoutParser::readLayout(const QString& path) {
             if (QString::compare(xmlReader.name(), "Run", Qt::CaseInsensitive) == 0) {
                 qDebug() << "<-- XML Layout Start -->" << Qt::endl;
                 parseRun(&xmlReader, splitLayout);
-                //qDebug() << xmlReader.attributes().value("Run").toString();
             }
         }
     }
@@ -183,25 +182,23 @@ void LayoutParser::parseSegments(QXmlStreamReader* xmlReader, SplitLayout* split
 }
 
 void LayoutParser::parseSegment(QXmlStreamReader* xmlReader, SplitLayout* splitLayout) {
-    SplitSegment segment;
-
-    qDebug() << "Parse Segment!";
+    SplitSegment* segment = new SplitSegment();
 
     while (!xmlReader->atEnd() && !xmlReader->hasError()) {
         QXmlStreamReader::TokenType token = xmlReader->readNext();
 
         if (token == QXmlStreamReader::StartElement) {
             if (QString::compare(xmlReader->name(), "Name", Qt::CaseInsensitive) == 0) {
-                readStringProperty(segment.name, xmlReader);
+                readStringProperty(segment->name, xmlReader);
             }
             else if (QString::compare(xmlReader->name(), "SplitTimes", Qt::CaseInsensitive) == 0) {
-                parseSplitTimes(xmlReader, segment);
+                parseSplitTimes(xmlReader, *segment);
             }
             else if (QString::compare(xmlReader->name(), "BestSegmentTime", Qt::CaseInsensitive) == 0) {
-                parseSegmentTime(xmlReader, segment.bestSegmentTime, "BestSegmentTime");
+                parseSegmentTime(xmlReader, segment->bestSegmentTime, "BestSegmentTime");
             }
             else if (QString::compare(xmlReader->name(), "SegmentHistory", Qt::CaseInsensitive) == 0) {
-                parseSegmentHistory(xmlReader, segment);
+                parseSegmentHistory(xmlReader, *segment);
             }
         }
         else if (token == QXmlStreamReader::EndElement) {
@@ -210,6 +207,7 @@ void LayoutParser::parseSegment(QXmlStreamReader* xmlReader, SplitLayout* splitL
             }
         }
     }
+    splitLayout->segments.append(segment);
 }
 
 void LayoutParser::parseSplitTimes(QXmlStreamReader* xmlReader, SplitSegment& splitSegment) {
