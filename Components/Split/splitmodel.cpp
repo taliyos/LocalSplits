@@ -49,7 +49,12 @@ QVariant SplitModel::data(const QModelIndex &index, int role) const {
 }
 
 bool SplitModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-    return QAbstractListModel::setData(index, value, role);
+    if (!index.isValid()) return false;
+
+    if (role == NameRole) m_splits->items()[index.row()]->name = value.toString();
+    else if (role == TimeRole) m_splits->items()[index.row()]->time = value.toString();
+
+    return true;
 }
 
 Qt::ItemFlags SplitModel::flags(const QModelIndex &index) const {
