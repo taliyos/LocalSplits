@@ -6,7 +6,7 @@ SplitModel::SplitModel(QObject *parent) : QAbstractListModel(parent) {
     std::vector<QString> tempSplits = {"Chauncey", "Boo Release", "Fire", "Water", "Bogmire", "Ice", "Moonshot", "Clairvoya Entry", "Boolossus", "Uncle Grimmly", "Rooftop", "Weston", "Forgor", "King Boo"};
 
     // Used only for creating and showing temporary splits when no splits are provided.
-    m_splits = new SplitList(this);
+    m_splits = new SplitListData(this);
     for (int i = 0; i < tempSplits.size(); i++) {
         m_splits->addItem(tempSplits[i], "-");
     }
@@ -17,11 +17,11 @@ SplitModel::~SplitModel() {
     m_splits = nullptr;
 }
 
-SplitList* SplitModel::splits() const {
+SplitListData* SplitModel::splits() const {
      return m_splits;
 }
 
-void SplitModel::setSplits(SplitList* splits) {
+void SplitModel::setSplits(SplitListData* splits) {
     beginResetModel();
     if (splits == m_splits) return;
     delete m_splits;

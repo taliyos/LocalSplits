@@ -2,12 +2,12 @@
 #define SPLITSMODEL_H
 
 #include "../SplitRow/splitrowmodel.h"
-#include "../SplitList/splitlist.h"
+#include "../SplitList/splitlistdata.h"
 
 
 class SplitModel : public QAbstractListModel {
     Q_OBJECT
-    Q_PROPERTY(SplitList* splits READ splits WRITE setSplits)
+    Q_PROPERTY(SplitListData* splits READ splits WRITE setSplits)
 
 public:
     explicit SplitModel(QObject* parent = nullptr);
@@ -18,8 +18,8 @@ public:
         TimeRole
     };
 
-    SplitList* splits() const;
-    void setSplits(SplitList* splits);
+    SplitListData* splits() const;
+    void setSplits(SplitListData* splits);
 
     // <-- Defaults -->
     int rowCount(const QModelIndex &parent) const override;
@@ -29,7 +29,7 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
-    SplitList* m_splits;
+    SplitListData* m_splits;
 };
 
 

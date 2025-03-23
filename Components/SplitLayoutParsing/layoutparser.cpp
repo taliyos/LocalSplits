@@ -31,7 +31,6 @@ SplitLayout* LayoutParser::readLayout(const QString& path) {
             if (QString::compare(xmlReader.name(), "Run", Qt::CaseInsensitive) == 0) {
                 qDebug() << "<-- XML Layout Start -->" << Qt::endl;
                 parseRun(&xmlReader, splitLayout);
-                //qDebug() << xmlReader.attributes().value("Run").toString();
             }
         }
     }

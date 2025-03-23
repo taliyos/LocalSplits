@@ -1,19 +1,19 @@
-#include "splitlist.h"
+#include "splitlistdata.h"
 
-SplitList::SplitList(QObject *parent) : QObject(parent) {
+SplitListData::SplitListData(QObject *parent) : QObject(parent) {
 }
 
-SplitList::~SplitList() {
+SplitListData::~SplitListData() {
     for (int i = 0; i < m_items.size(); i++) {
         delete m_items[i];
     }
 }
 
-QVector<SplitItem*> SplitList::items() const {
+QVector<SplitItem*> SplitListData::items() const {
     return m_items;
 }
 
-bool SplitList::setItemAt(int index, SplitItem* item) {
+bool SplitListData::setItemAt(int index, SplitItem* item) {
     if (index < 0 || index >= m_items.size() || item == nullptr) return false;
 
     const SplitItem* existingItem = m_items.at(index);
@@ -24,11 +24,11 @@ bool SplitList::setItemAt(int index, SplitItem* item) {
     return true;
 }
 
-void SplitList::addItem() {
+void SplitListData::addItem() {
     addItem("New Split", "-");
 }
 
-void SplitList::addItem(const QString& name, const QString& time) {
+void SplitListData::addItem(const QString& name, const QString& time) {
     emit preItemAppended();
 
     SplitItem* item = new SplitItem();
@@ -40,7 +40,7 @@ void SplitList::addItem(const QString& name, const QString& time) {
     emit postItemAppended();
 }
 
-void SplitList::removeItem(int index) {
+void SplitListData::removeItem(int index) {
     if (index < 0 || index >= m_items.size()) return;
 
     emit preItemRemoved(index);

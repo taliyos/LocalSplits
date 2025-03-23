@@ -15,11 +15,11 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<SplitModel>("com.localsplits", 1, 0, "SplitModel");
-    qmlRegisterUncreatableType<SplitList>("com.localsplits", 1, 0, "SplitList", QStringLiteral("SplitList should not be created in QML"));
+    qmlRegisterUncreatableType<SplitListData>("com.localsplits", 1, 0, "SplitListData", QStringLiteral("SplitListData should not be created in QML"));
 
-    SplitLayout* splitLayout = LayoutParser::readLayout("D:\\Projects\\LocalSplits\\tests\\testLayout.lss");
+    SplitLayout* splitLayout = LayoutParser::readLayout("tests\\testLayout.lss");
 
-    SplitList* splitList = new SplitList();
+    SplitListData* splitList = new SplitListData();
 
     for (int i = 0; i < splitLayout->segments.size(); i++) {
         SplitSegment* segment = splitLayout->segments.at(i);

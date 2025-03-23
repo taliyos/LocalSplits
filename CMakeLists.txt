@@ -14,8 +14,8 @@ qt_add_executable(appLocalSplits
         Components/Split/splitmodel.cpp
         Components/Split/splitmodel.h
         Components/Split/splititem.h
-        Components/SplitList/SplitList.cpp
-        Components/SplitList/SplitList.h
+        Components/SplitList/splitlistdata.cpp
+        Components/SplitList/splitlistdata.h
 )
 
 qt_add_qml_module(appLocalSplits

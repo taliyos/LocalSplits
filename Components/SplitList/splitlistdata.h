@@ -5,12 +5,12 @@
 #include <QVector>
 #include "../Split/splititem.h"
 
-class SplitList : public QObject {
+class SplitListData : public QObject {
     Q_OBJECT
 
 public:
-    explicit SplitList(QObject* parent = nullptr);
-    ~SplitList() override;
+    explicit SplitListData(QObject* parent = nullptr);
+    ~SplitListData() override;
 
     QVector<SplitItem*> items() const;
 

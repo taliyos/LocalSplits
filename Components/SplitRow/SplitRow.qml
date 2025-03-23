@@ -10,16 +10,12 @@ Rectangle {
     property string time: "00:00:00.00"
     property color splitColor
 
-    signal nameEditFinished(editedText: string)
-    signal timeEditFinished(editedText: string)
+    signal nameEditFinished(string editedText)
+    signal timeEditFinished(string editedText)
 
     id: split
 
     Layout.fillWidth: true
-
-    Layout.preferredHeight: 25
-    Layout.minimumHeight: 25
-    Layout.maximumHeight: 25
 
     radius: 2
     height: 30
@@ -42,10 +38,10 @@ Rectangle {
             Layout.horizontalStretchFactor: 3
             Layout.leftMargin: 4
 
-            onEditFinished: (editedText) => {
-                console.log("name edit finished")
-                split.nameEditFinished(editedText)
-            }
+            onEditFinished: editedText => {
+                                console.log("name edit finished")
+                                split.nameEditFinished(editedText)
+                            }
 
             onTabPressed: {
                 console.log("name edit tab out")
@@ -63,10 +59,10 @@ Rectangle {
             Layout.rightMargin: 4
             Layout.minimumWidth: getChildWidth()
 
-            onEditFinished: (editedText) => {
-                console.log("time edit finished")
-                split.timeEditFinished(editedText)
-            }
+            onEditFinished: editedText => {
+                                console.log("time edit finished")
+                                split.timeEditFinished(editedText)
+                            }
 
             onTabPressed: {
                 console.log("time edit tab out")
