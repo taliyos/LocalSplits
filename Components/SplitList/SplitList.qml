@@ -29,18 +29,16 @@ ColumnLayout {
             time: model.time
 
             splitColor: index % 2 == 0 ? "#2b2b2b" : "#00000000"
-
-            onNameEditFinished: (editedText) => {
-                console.log("EDIT")
-                if (model.name === editedText) return;
-                console.log(model.name + " " + editedText)
+            onNameEditFinished: editedText => {
+                if (model.name === editedText) return
+                console.log("Name edit: " + model.name + " -> " + editedText)
                 model.name = editedText
                 name = editedText
             }
 
-            onTimeEditFinished: (editedText) => {
-                if (model.time === editedText) return;
-                console.log(model.time + " " + editedText)
+            onTimeEditFinished: editedText => {
+                if (model.time === editedText) return
+                console.log("Time edit: " + model.time + " -> " + editedText)
                 model.time = editedText
                 time = editedText
             }
