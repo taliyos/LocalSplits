@@ -9,6 +9,7 @@
 #include "Components/SplitLayoutParsing/layoutparser.h"
 #include "Components/SplitList/splitlist.h"
 #include "Components/SplitRow/splitrowmodel.h"
+#include "Components/SplitList/splitlistdata.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
 
     delete splitLayout;
 
-    QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, [] {onAppExit();}, Qt::QueuedConnection);
+    //QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, [] {onAppExit();}, Qt::QueuedConnection);
 
     return app.exec();
 }
