@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<SplitListData>("com.localsplits", 1, 0, "SplitListData", QStringLiteral("SplitListData should not be created in QML"));
 
     SplitLayout* splitLayout = LayoutParser::readLayout("tests\\testLayout.lss");
+    if (splitLayout == nullptr) return -1;
 
     SplitListData* splitList = new SplitListData();
 
