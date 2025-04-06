@@ -5,7 +5,6 @@ import QtQuick.Controls
 import "../Fonts"
 import "../EditableLabel"
 
-Rectangle {
 MouseArea {
     property string name: "Split Name"
     property string time: "00:00:00.00"
@@ -269,3 +268,4 @@ MouseArea {
             }
         }
     }
+}
