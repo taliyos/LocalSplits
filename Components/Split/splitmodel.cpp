@@ -22,10 +22,27 @@ SplitListData* SplitModel::splits() const {
 }
 
 void SplitModel::setSplits(SplitListData* splits) {
-    beginResetModel();
     if (splits == m_splits) return;
-    delete m_splits;
+
+    beginResetModel();
+    if (m_splits) m_splits->disconnect(this);
+    else delete m_splits;
     m_splits = splits;
+    if (m_splits) {
+        connect(m_splits, &SplitListData::preItemInserted, this, [=](int index) {
+            beginInsertRows(QModelIndex(), index, index);
+
+        });
+        connect(m_splits, &SplitListData::postItemInserted, this, [=]() {
+            endInsertRows();
+        });
+        connect(m_splits, &SplitListData::preItemRemoved, this, [=](int index) {
+            beginRemoveRows(QModelIndex(), index, index);
+        });
+        connect(m_splits, &SplitListData::postItemRemoved, this, [=]() {
+            endRemoveRows();
+        });
+    }
     endResetModel();
 }
 

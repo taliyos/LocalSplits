@@ -19,25 +19,28 @@ bool SplitListData::setItemAt(int index, SplitItem* item) {
     const SplitItem* existingItem = m_items.at(index);
     if (existingItem->name == item->name && existingItem->time == item->time) return false;
 
-
     m_items[index] = item;
     return true;
 }
 
 void SplitListData::addItem() {
-    addItem("New Split", "-");
+    addItem("New Split", "-", m_items.size());
 }
 
 void SplitListData::addItem(const QString& name, const QString& time) {
-    emit preItemAppended();
+    addItem(name, time, m_items.size());
+}
+
+void SplitListData::addItem(const QString& name, const QString& time, const qsizetype& index) {
+    emit preItemInserted(index);
 
     SplitItem* item = new SplitItem();
     item->name = name;
     item->time = time;
 
-    m_items.append(item);
+    m_items.insert(index, item);
 
-    emit postItemAppended();
+    emit postItemInserted();
 }
 
 void SplitListData::removeItem(int index) {
