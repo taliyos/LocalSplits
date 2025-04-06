@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import com.localsplits
 import "../SplitRow"
+import "../Fonts"
+import "../SplitFooterButton"
 
 ColumnLayout {
     property alias splitHeight: splitsList.height
