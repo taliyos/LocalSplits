@@ -42,6 +42,63 @@ ColumnLayout {
                 model.time = editedText
                 time = editedText
             }
+        footer: Rectangle {
+            color: "#2b2b2b"
+
+            width: 50
+            height: 25
+            bottomRightRadius: 2
+            bottomLeftRadius: 2
+
+            anchors.right: parent.right
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                SplitFooterButton {
+                    contentText: "+"
+                    layoutWidth: parent.width / 2
+
+                    backgroundNormalColor: "transparent"
+                    backgroundHoverColor: "#3d3d3d"
+                    backgroundPressedColor: "#ffffff"
+                    textNormalColor: "#ffffff"
+                    textHoverColor: "#ffffff"
+                    textPressedColor: "#000000"
+
+                    bottomLeftRadius: 2
+                    bottomRightRadius: 0
+                    topRightRadius: 0
+                    topLeftRadius: 0
+
+                    onClicked: {
+                        splitsList.addedIndex = splitsList.count
+                        splitList.addItem()
+                    }
+                }
+
+                SplitFooterButton {
+                    contentText: "-"
+                    layoutWidth: 25
+
+                    backgroundNormalColor: "transparent"
+                    backgroundHoverColor: "#3d3d3d"
+                    backgroundPressedColor: "#ffffff"
+                    textNormalColor: "#ffffff"
+                    textHoverColor: "#ffffff"
+                    textPressedColor: "#000000"
+
+                    bottomLeftRadius: 0
+                    bottomRightRadius: 2
+                    topRightRadius: 0
+                    topLeftRadius: 0
+
+                    onClicked: {
+                        splitList.removeItem(splitsList.count - 1)
+                    }
+                }
+            }
         }
     }
 }
