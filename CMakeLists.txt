@@ -41,12 +41,12 @@ qt_add_qml_module(appLocalSplits
         Components/SplitRow/qmldir
         Components/SplitList/qmldir
         Components/EditableLabel/qmldir
+        Components/SplitFooterButton/qmldir
     QML_FILES
         Components/SplitRow/SplitRow.qml
         Components/SplitList/SplitList.qml
         Components/EditableLabel/EditableLabel.qml
-
-
+        Components/SplitFooterButton/SplitFooterButton.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

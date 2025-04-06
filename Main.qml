@@ -2,11 +2,12 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Controls.Basic
 import "Components/Fonts"
 import "Components/SplitList"
 import "Components/SplitRow"
 
-Window {
+ApplicationWindow {
     id: window
     width: 300
     height: 480
@@ -40,6 +41,7 @@ Window {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.fillWidth: true
 
+                    color: "#ffffff"
                     font.family: OpenSans.family
                     font.styleName: OpenSans.bold
                     font.pointSize: 12
@@ -55,6 +57,8 @@ Window {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.NoWrap
+
+                        color: "#ffffff"
                         font.family: OpenSans.family
                         font.styleName: OpenSans.bold
 
@@ -68,6 +72,7 @@ Window {
                         font.bold: false
                         wrapMode: Text.NoWrap
 
+                        color: "#ffffff"
                         font.family: OpenSans.family
                         font.styleName: OpenSans.italic
 
@@ -116,8 +121,10 @@ Window {
                 color: "#00000000"
             }
         }
+
+        background: Rectangle {
+            color: "#1e1e1e"
+        }
     }
 
-    onClosing: {
-    }
 }

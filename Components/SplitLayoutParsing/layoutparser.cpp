@@ -1,8 +1,6 @@
 #include "layoutparser.h"
 
-#include <QFile>
-#include <QDebug>
-
+#include <QDir>
 
 
 SplitLayout* LayoutParser::readLayout(const QString& path) {

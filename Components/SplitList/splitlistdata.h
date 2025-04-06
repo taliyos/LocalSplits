@@ -17,15 +17,17 @@ public:
     bool setItemAt(int index, SplitItem* item);
 
 signals:
-    void preItemAppended();
-    void postItemAppended();
+    void preItemInserted(int index);
+    void postItemInserted();
 
     void preItemRemoved(int index);
     void postItemRemoved();
 
 public slots:
+    //
     void addItem();
     void addItem(const QString& name, const QString& time);
+    void addItem(const QString& name, const QString& time, const qsizetype& index);
     void removeItem(int index);
 
 private:

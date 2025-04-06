@@ -7,14 +7,19 @@ import "../Fonts"
 MouseArea {
     property bool isClicked: false
     property string text: "Text"
+    property color textColor: "#ffffff"
 
-    signal editFinished(editedText: string)
-    signal tabPressed
+    signal editStarted
+    signal editConfirmed(editedText: string)
+    signal editFinished
+    signal editCancelled
+    signal itemTabbed
 
     id: mouseArea
     clip: true
 
     acceptedButtons: Qt.LeftButton
+    propagateComposedEvents: true
 
     function startEdit() {
         isClicked = !isClicked
@@ -23,6 +28,7 @@ MouseArea {
             edit.cursorPosition = edit.length
             edit.selectAll()
         }
+        editStarted()
     }
 
     function getChildWidth() {
@@ -44,7 +50,7 @@ MouseArea {
         font.family: OpenSans.family
         font.styleName: OpenSans.bold
 
-        color: "#ffffff"
+        color: mouseArea.textColor
         text: parent.text
 
         visible: !parent.isClicked
@@ -60,38 +66,41 @@ MouseArea {
         font.family: OpenSans.family
         font.styleName: OpenSans.regular
 
-        color: "#ffffff"
+        color: mouseArea.textColor
         text: parent.text
 
         visible: parent.isClicked
 
         onEditingFinished: {
             parent.focus = false
-            parent.editFinished(text)
+            console.log("editing finished for " + parent.text)
+            parent.editConfirmed(text)
         }
 
         onFocusChanged: {
-            if (!focus)
+            if (!focus) {
                 parent.isClicked = false
+                setInactive()
+            }
         }
 
         Keys.onPressed: event => {
             if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
                 event.accepted = true
                 focus = false
+                parent.editFinished()
             }
             else if (event.key === Qt.Key_Tab) {
                 event.accepted = true
                 focus = false
-                parent.tabPressed()
+                parent.itemTabbed()
             }
             else if (event.key === Qt.Key_Escape) {
                 event.accepted = true
                 text = parent.text
                 focus = false
+                parent.editCancelled()
             }
-
-
         }
     }
 }
