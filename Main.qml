@@ -3,9 +3,12 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
+import QtQuick.Dialogs
 import "Components/Fonts"
 import "Components/SplitList"
 import "Components/SplitRow"
+import "Components/EditableLabel"
+import com.localsplits
 
 ApplicationWindow {
     id: window
@@ -14,8 +17,33 @@ ApplicationWindow {
     visible: true
     title: qsTr("LocalSplits")
 
+    menuBar: SplitsMenuBar {
+        onNewFile: {
+            split.newFile()
+        }
+
+        onOpen: {
+            openFileDialog.open()
+        }
+    }
+
+    FileDialog {
+        id: openFileDialog
+
+        acceptLabel: "Open Splits"
+        fileMode: FileDialog.OpenFile
+        nameFilters: ["LocalSplits (*.localsplits)", "LiveSplit (*.lss)"]
+
+        onAccepted: {
+            console.log("file opened")
+            //console.log(split.getName())
+            split.openFile(selectedFile)
+            split.name = "Test123"
+        }
+    }
+
     Pane {
-        id: _main
+        id: main
         anchors.fill: parent
         padding: 4
 
@@ -24,59 +52,79 @@ ApplicationWindow {
             height: parent.height
 
             ColumnLayout {
-                id: _title
+                id: title
                 width: parent.width
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                Label {
-                    id: _titleText
-                    text: gameName
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    wrapMode: Text.WordWrap
+                EditableLabel {
+                    id: titleText
+                    text: split.gameName
                     Layout.alignment: Qt.AlignHCenter
                     Layout.fillWidth: true
+                    Layout.minimumHeight: getChildHeight()
 
-                    color: "#ffffff"
-                    font.family: OpenSans.family
-                    font.styleName: OpenSans.bold
-                    font.pointSize: 12
+                    pointSize: 12
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    onEditConfirmed: editedText => {
+                        if (split.gameName === editedText) return
+                        console.log("Game name edit: " + split.gameName + " -> " + editedText)
+                        split.gameName = editedText
+                    }
                 }
 
-                Item {
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.minimumHeight: childrenRect.height
-                    Label {
-                        id: _runCategory
-                        text: qsTr("Any%")
-                        font.pixelSize: 10
+                    //Layout.minimumHeight: childrenRect.height
+                    height: runCategory.height
+
+                    EditableLabel {
+                        id: runCategory
+                        text: split.categoryName
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillWidth: true
+                        Layout.minimumHeight: getChildHeight()
+
+                        pointSize: 9
+                        wrapMode: Text.WordWrap
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.NoWrap
-
-                        color: "#ffffff"
-                        font.family: OpenSans.family
-                        font.styleName: OpenSans.bold
 
                         anchors.centerIn: parent
+
+                        onEditConfirmed: editedText => {
+                            if (split.categoryName === editedText) return
+                            console.log("Category name edit: " + split.gameName + " -> " + editedText)
+                            split.categoryName = editedText
+                        }
                     }
 
-                    Label {
-                        id: _attemptCounter
-                        text: qsTr("0")
-                        font.pixelSize: 12
-                        font.bold: false
-                        wrapMode: Text.NoWrap
+                    EditableLabel {
+                        id: attemptCount
+                        text: split.attemptCount
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.minimumWidth: getChildWidth()
+                        Layout.minimumHeight: getChildHeight()
 
-                        color: "#ffffff"
-                        font.family: OpenSans.family
-                        font.styleName: OpenSans.italic
+                        pointSize: 9
+                        wrapMode: Text.NoWrap
+                        horizontalAlignment: Text.AlignRight
+                        verticalAlignment: Text.AlignVCenter
 
                         anchors.right: parent.right
+                        readFontStyle: OpenSans.italic
+                        debug: true
+
+                        onEditConfirmed: editedText => {
+                            if (split.attemptCount === editedText) return
+                            console.log("Category name edit: " + split.attemptCount + " -> " + editedText)
+                            split.attemptCount = parseInt(editedText)
+                        }
                     }
                 }
             }
@@ -125,6 +173,11 @@ ApplicationWindow {
         background: Rectangle {
             color: "#1e1e1e"
         }
+
+    }
+
+    onClosing: {
+        Qt.quit()
     }
 
 }

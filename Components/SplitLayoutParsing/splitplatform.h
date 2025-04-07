@@ -4,8 +4,10 @@
 #include <QString>
 
 struct SplitPlatform {
-    QString platform;
-    QString usesEmulator;
+    Q_GADGET
+public:
+    QString platform = "GCN";
+    QString usesEmulator = "Y";
 };
 
 #endif // SPLITPLATFORM_H

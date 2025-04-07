@@ -8,12 +8,14 @@
 #include "Components/SplitLayoutParsing/splitsegment.h"
 
 struct SplitLayout {
+    Q_GADGET
+public:
     QString gameIcon;
-    QString gameName;
-    QString categoryName;
+    QString gameName = "Game Name";
+    QString categoryName = "Category Name";
     SplitMetadata metadata;
     QString offset;
-    int attemptCount;
+    int attemptCount = 0;
     QList<SplitAttempt> attemptHistory;
     QList<SplitSegment*> segments;
 };
