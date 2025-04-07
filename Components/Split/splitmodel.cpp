@@ -42,6 +42,12 @@ void SplitModel::setSplits(SplitListData* splits) {
         connect(m_splits, &SplitListData::postItemRemoved, this, [=]() {
             endRemoveRows();
         });
+        connect(m_splits, &SplitListData::preClear, this, [=] {
+            beginResetModel();
+        });
+        connect(m_splits, &SplitListData::postClear, this, [=] {
+            endResetModel();
+        });
     }
     endResetModel();
 }

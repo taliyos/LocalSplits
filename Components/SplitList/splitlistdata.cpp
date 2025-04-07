@@ -51,3 +51,14 @@ void SplitListData::removeItem(int index) {
     m_items.removeAt(index);
     emit postItemRemoved();
 }
+
+void SplitListData::clear() {
+    if (m_items.size() == 0)  return;
+
+    emit preClear();
+    for (int i = 0; i < m_items.size(); i++) {
+        delete m_items[i];
+    }
+    m_items.clear();
+    emit postClear();
+}

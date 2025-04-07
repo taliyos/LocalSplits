@@ -5,9 +5,11 @@
 #include "Components/SplitLayoutParsing/splitplatform.h"
 
 struct SplitMetadata {
-    QString runId;
+    Q_GADGET
+public:
+    QString runId = "";
     SplitPlatform platform;
-    QString region;
+    QString region = "US";
 };
 
 #endif // SPLITMETADATA_H

@@ -8,6 +8,13 @@ MouseArea {
     property bool isClicked: false
     property string text: "Text"
     property color textColor: "#ffffff"
+    property int pointSize: 10
+    property int wrapMode: Text.NoWrap
+    property int horizontalAlignment: Text.AlignLeft
+    property int verticalAlignment: Text.AlignVCenter
+    property string readFontStyle: OpenSans.bold
+    property string editFontStyle: OpenSans.regular
+
 
     signal editStarted
     signal editConfirmed(editedText: string)
@@ -36,6 +43,11 @@ MouseArea {
         else return label.contentWidth;
     }
 
+    function getChildHeight() {
+        if (isClicked) return edit.contentHeight;
+        else return label.contentHeight;
+    }
+
     onDoubleClicked: {
         startEdit()
     }
@@ -45,15 +57,18 @@ MouseArea {
 
         width: parent.width
         height: parent.height
-        verticalAlignment: Text.AlignVCenter
-        font.pointSize: 10
+        horizontalAlignment: mouseArea.horizontalAlignment
+        verticalAlignment: mouseArea.verticalAlignment
+        font.pointSize: mouseArea.pointSize
         font.family: OpenSans.family
-        font.styleName: OpenSans.bold
+        font.styleName: mouseArea.readFontStyle
 
         color: mouseArea.textColor
         text: parent.text
 
         visible: !parent.isClicked
+
+        wrapMode: mouseArea.wrapMode
     }
 
     TextEdit {
@@ -61,15 +76,18 @@ MouseArea {
 
         width: parent.width
         height: parent.height
-        verticalAlignment: Text.AlignVCenter
-        font.pointSize: 10
+        horizontalAlignment: mouseArea.horizontalAlignment
+        verticalAlignment: mouseArea.verticalAlignment
+        font.pointSize: mouseArea.pointSize
         font.family: OpenSans.family
-        font.styleName: OpenSans.regular
+        font.styleName: mouseArea.editFontStyle
 
         color: mouseArea.textColor
         text: parent.text
 
         visible: parent.isClicked
+        wrapMode: mouseArea.wrapMode
+
 
         onEditingFinished: {
             parent.focus = false

@@ -23,12 +23,15 @@ signals:
     void preItemRemoved(int index);
     void postItemRemoved();
 
+    void preClear();
+    void postClear();
+
 public slots:
-    //
     void addItem();
     void addItem(const QString& name, const QString& time);
     void addItem(const QString& name, const QString& time, const qsizetype& index);
     void removeItem(int index);
+    void clear();
 
 private:
     QVector<SplitItem*> m_items;
