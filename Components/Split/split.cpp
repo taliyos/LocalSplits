@@ -9,6 +9,8 @@
 Split::Split(QObject *parent) : QObject(parent) {
     m_layout = new SplitLayout();
     m_data = new SplitListData();
+    m_timer = new Timer();
+
 }
 
 Split::~Split() {
@@ -22,6 +24,10 @@ SplitLayout* Split::getLayout() const {
 
 SplitListData* Split::getData() const {
     return m_data;
+}
+
+Timer* Split::getTimer() {
+    return m_timer;
 }
 
 void Split::openFile(const QString& fileLocation) {
@@ -73,7 +79,7 @@ QString Split::getGameName() const {
 
 void Split::setGameName(const QString& name) {
     m_layout->gameName = name;
-    emit gameNameChanged();
+    // emit gameNameChanged();
 }
 
 QString Split::getCategoryName() const{

@@ -1,28 +1,31 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <QString>
-#include <qqml.h>
 
 class Timer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
-    QML_ELEMENT
+    Q_PROPERTY(QString time READ getTime)
 
 public:
-    explicit Timer(QObject *parent = nullptr);
-    QString userName();
-    void setUserName(const QString &userName);
+    explicit Timer(QObject* parent = nullptr);
+    // ~Timer() override;
+
+    // void setTime(const QString& time);
+
+public slots:
+    QString getTime() const;
 
 signals:
-    void userNameChanged();
+    // void timeChanged();
 
 private:
-    QString m_userName;
-}
-
+    QElapsedTimer timer;
+    long pausedTime;
+    long resumedTime;
+};
 
 #endif // TIMER_H
-
