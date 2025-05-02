@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "Components/SplitLayoutParsing/splitplatform.h"
-#include "timer.h"
+#include "Components/Timer/timer.h"
 
 
 class SplitListData;

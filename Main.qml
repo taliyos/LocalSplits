@@ -152,7 +152,7 @@ ApplicationWindow {
                 Label {
                     id: _runTimer
 
-                    text: "HERE :()"
+                    text: split.getTimer().time
                     font.pointSize: 28
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -169,7 +169,7 @@ ApplicationWindow {
                     width: 32
                     height:32
 
-                    onClicked: Timer.pauseTimer()
+                    onClicked: split.getTimer().time = "123"
                 }
 
 
