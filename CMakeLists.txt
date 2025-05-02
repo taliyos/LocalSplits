@@ -57,7 +57,6 @@ qt_add_qml_module(appLocalSplits
         Components/SplitsMenuBar/SplitsMenuItem.qml
         Components/SplitsMenuBar/SplitsMenu.qml
         Components/AboutPopup/AboutPopup.qml
-        SOURCES timer.h timer.cpp
 
 
 )
