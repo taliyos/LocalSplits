@@ -16,7 +16,7 @@ Timer::Timer(const int& updateMilisecondInterval, QObject *parent) : QObject{par
 }
 
 QString Timer::getTime() const {
-    qint64 elapsedTimer = timer.elapsed() / 10 + 590000;
+    qint64 elapsedTimer = timer.elapsed() / 10;
 
     qint64 hours = elapsedTimer / 360000;
 
