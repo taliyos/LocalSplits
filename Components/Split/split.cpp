@@ -9,8 +9,7 @@
 Split::Split(QObject *parent) : QObject(parent) {
     m_layout = new SplitLayout();
     m_data = new SplitListData();
-    m_timer = new Timer();
-
+    m_timer = new Timer(5);
 }
 
 Split::~Split() {
