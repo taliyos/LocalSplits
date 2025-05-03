@@ -2,7 +2,6 @@
 #define TIMER_H
 
 #include <QElapsedTimer>
-#include <QTimer>
 #include <QObject>
 #include <QString>
 
@@ -13,7 +12,7 @@ class Timer : public QObject
 
 public:
     // To attempt to fix type_traits: to help -> about plugins -> deactivate clang code model
-    explicit Timer(QObject* parent = nullptr);
+    explicit Timer(const int& updateMilisecondInterval, QObject* parent = nullptr);
     // ~Timer() override;
 
     // void setTime(const QString& time);
@@ -28,10 +27,11 @@ signals:
 
 private:
     QElapsedTimer timer;
-    // QTimer timeoutTimer;
     long pausedTime;
     long resumedTime;
-    QString formatTime(QList<qint64> timeArray, int index, QString separator) const;
+    static QString formatTime(QList<qint64> timeArray, int index, const QString& separator);
+
+    int updateMilisecondInterval;
 };
 
 #endif // TIMER_H
