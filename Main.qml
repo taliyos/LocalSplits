@@ -169,7 +169,7 @@ ApplicationWindow {
                     width: 32
                     height:32
 
-                    onClicked: split.getTimer().time = "123"
+                    onClicked: split.getTimer().onPauseButtonClick()
                 }
 
 

@@ -20,17 +20,24 @@ public:
     void setTime(const QString &newTime);
 
 public slots:
-    QString getTime() const;
+    QString getTime();
+
+    void onPauseButtonClick();
 
 signals:
     void timeChanged();
 
 private:
     QElapsedTimer timer;
-    long pausedTime;
-    long resumedTime;
+
+    qint64 pausedTime = 0;
+    qint64 resumedTime = 0;
+    qint64 deadTime = 0;
+
     static QString formatTime(QList<qint64> timeArray, int index, const QString& separator);
 
+    // True when timer paused, false when unpaused
+    bool timerPaused = true;
     int updateMilisecondInterval;
 };
 
