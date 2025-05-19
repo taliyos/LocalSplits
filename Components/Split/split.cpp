@@ -1,6 +1,7 @@
 #include "split.h"
 
 #include <QDir>
+#include <iostream>
 #include <qurl.h>
 
 #include "Components/SplitLayoutParsing/layoutparser.h"
@@ -9,6 +10,7 @@
 Split::Split(QObject *parent) : QObject(parent) {
     m_layout = new SplitLayout();
     m_data = new SplitListData();
+    m_timer = new Timer(5);
 }
 
 Split::~Split() {
@@ -22,6 +24,21 @@ SplitLayout* Split::getLayout() const {
 
 SplitListData* Split::getData() const {
     return m_data;
+}
+
+Timer* Split::getTimer() {
+    return m_timer;
+}
+
+void Split::onSplitButtonPress(){
+
+    if (m_data->items().size() <= splitrow){
+        qDebug() << "NO more splits";
+        return;
+    }
+    m_data->setTimeatSplitIndex(m_timer->getTime(), splitrow);
+
+    splitrow++;
 }
 
 void Split::openFile(const QString& fileLocation) {
@@ -73,7 +90,7 @@ QString Split::getGameName() const {
 
 void Split::setGameName(const QString& name) {
     m_layout->gameName = name;
-    emit gameNameChanged();
+    // emit gameNameChanged();
 }
 
 QString Split::getCategoryName() const{

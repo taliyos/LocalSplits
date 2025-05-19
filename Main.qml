@@ -17,6 +17,25 @@ ApplicationWindow {
     visible: true
     title: qsTr("LocalSplits")
 
+    FocusScope {
+        id: globalKeyHandler
+        focus: true   // Steal focus at launch
+        visible: false
+
+        Keys.onPressed: (event) => {
+            if (event.key === Qt.Key_Space) {
+                split.getTimer().onPauseButtonClick()
+                event.accepted = true
+            }
+            if (event.key === Qt.Key_0) {
+                split.onSplitButtonPress()
+                event.accepted = true
+            }
+
+        }
+
+    }
+
     menuBar: SplitsMenuBar {
         onNewFile: {
             split.newFile()
@@ -41,6 +60,7 @@ ApplicationWindow {
             split.name = "Test123"
         }
     }
+
 
     Pane {
         id: main
@@ -72,9 +92,11 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
 
                     onEditConfirmed: editedText => {
+                        globalKeyHandler.forceActiveFocus()
                         if (split.gameName === editedText) return
                         console.log("Game name edit: " + split.gameName + " -> " + editedText)
                         split.gameName = editedText
+
                     }
                 }
 
@@ -98,9 +120,11 @@ ApplicationWindow {
                         anchors.centerIn: parent
 
                         onEditConfirmed: editedText => {
+                            globalKeyHandler.forceActiveFocus()
                             if (split.categoryName === editedText) return
                             console.log("Category name edit: " + split.gameName + " -> " + editedText)
                             split.categoryName = editedText
+
                         }
                     }
 
@@ -118,12 +142,14 @@ ApplicationWindow {
 
                         anchors.right: parent.right
                         readFontStyle: OpenSans.italic
-                        debug: true
+                        // debug: true
 
                         onEditConfirmed: editedText => {
+                            globalKeyHandler.forceActiveFocus()
                             if (split.attemptCount === editedText) return
                             console.log("Category name edit: " + split.attemptCount + " -> " + editedText)
                             split.attemptCount = parseInt(editedText)
+
                         }
                     }
                 }
@@ -137,17 +163,22 @@ ApplicationWindow {
                 Layout.fillWidth: true
             }
 
+
             RowLayout {
-                id: _timer
+                property string name: "HERE1"
+                id: qmlTimer
                 width: parent.width
 
                 Layout.alignment: Qt.AlignBottom
                 Layout.maximumHeight: 75
                 Layout.minimumHeight: 75
 
+
+
                 Label {
                     id: _runTimer
-                    text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Open Sans ExtraBold'; font-size:32pt;\">00:00:00</span><span style=\" font-family:'Open Sans ExtraBold'; font-size:24pt;\">.00</span></p></body></html>"
+
+                    text: split.getTimer().time
                     font.pointSize: 28
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -158,6 +189,23 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                 }
+
+                Button {
+                   id: pauseButton
+                    width: 32
+                    height:32
+
+                    onClicked: split.getTimer().onPauseButtonClick()
+                }
+                Button {
+                   id: splitButton
+                    width: 32
+                    height:32
+
+                    onClicked: split.onSplitButtonPress()
+                }
+
+
             }
 
             SplitRow {

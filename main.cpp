@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<SplitListData>("com.localsplits", 1, 0, "SplitListData", QStringLiteral("SplitListData should not be created in QML"));
 
     Split* split = new Split();
-    split->openFile("tests\\testLayout.lss");
+    // split->openFile("tests\\testLayout.lss");
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("split"), split);

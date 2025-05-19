@@ -48,6 +48,11 @@ void SplitModel::setSplits(SplitListData* splits) {
         connect(m_splits, &SplitListData::postClear, this, [=] {
             endResetModel();
         });
+        connect(m_splits, &SplitListData::splitChanged, this, [=](int index) {
+            QModelIndex modelIndex = createIndex(index, 0);
+            emit dataChanged(modelIndex, modelIndex, {NameRole, TimeRole});
+        });
+
     }
     endResetModel();
 }

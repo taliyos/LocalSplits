@@ -18,6 +18,8 @@ qt_add_executable(appLocalSplits
         Components/SplitList/splitlistdata.h
         Components/Split/split.cpp
         Components/Split/split.h
+        Components/Timer/timer.cpp
+        Components/Timer/timer.h
 )
 
 qt_add_qml_module(appLocalSplits
@@ -30,7 +32,7 @@ qt_add_qml_module(appLocalSplits
     RESOURCES Components/Fonts/qmldir
     RESOURCES Resources.qrc
     SOURCES
-    SOURCES timer.h timer.cpp
+    SOURCES Components/Timer/timer.cpp Components/Timer/timer.h
     SOURCES Components/SplitLayoutParsing/layoutparser.cpp Components/SplitLayoutParsing/layoutparser.h   Components/SplitLayoutParsing/splitsegment.h Components/SplitLayoutParsing/splittime.h
     SOURCES Components/SplitLayoutParsing/timemethod.h
     SOURCES Components/SplitLayoutParsing/segmenttime.h
@@ -55,6 +57,8 @@ qt_add_qml_module(appLocalSplits
         Components/SplitsMenuBar/SplitsMenuItem.qml
         Components/SplitsMenuBar/SplitsMenu.qml
         Components/AboutPopup/AboutPopup.qml
+
+
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
