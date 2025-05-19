@@ -1,4 +1,5 @@
 #include "splitlistdata.h"
+#include <QDebug>
 
 SplitListData::SplitListData(QObject *parent) : QObject(parent) {
 }
@@ -43,6 +44,7 @@ void SplitListData::addItem(const QString& name, const QString& time, const qsiz
     emit postItemInserted();
 }
 
+
 void SplitListData::removeItem(int index) {
     if (index < 0 || index >= m_items.size()) return;
 
@@ -61,4 +63,10 @@ void SplitListData::clear() {
     }
     m_items.clear();
     emit postClear();
+}
+
+void SplitListData::setTimeatSplitIndex(const QString& time, int index){
+
+    m_items[index]->time = time;
+    emit splitChanged(index);
 }

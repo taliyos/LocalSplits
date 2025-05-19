@@ -18,7 +18,7 @@ class Split : public QObject {
     Q_PROPERTY(SplitPlatform platform READ getPlatform WRITE setPlatform NOTIFY platformChanged)
     Q_PROPERTY(QString region READ getRegion WRITE setRegion NOTIFY regionChanged)
     Q_PROPERTY(int attemptCount READ getAttemptCount WRITE setAttemptCount NOTIFY attemptCountChanged)
-    // Q_PROPERTY(Timer* timer READ getTimer NOTIFY timerChanged())
+
 
 
 public:
@@ -58,7 +58,6 @@ signals:
     void platformChanged();
     void regionChanged();
     void attemptCountChanged();
-    void timerChanged();
 
 
 public slots:
@@ -66,10 +65,14 @@ public slots:
     void newFile();
     Timer* getTimer();
 
+    void onSplitButtonPress();
+
 private:
     SplitLayout* m_layout;
     SplitListData* m_data;
     Timer* m_timer;
+
+    int splitrow = 0;
 };
 
 

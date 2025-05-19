@@ -26,6 +26,8 @@ signals:
     void preClear();
     void postClear();
 
+    void splitChanged(int index);
+
 public slots:
     void addItem();
     void addItem(const QString& name, const QString& time);
@@ -33,8 +35,11 @@ public slots:
     void removeItem(int index);
     void clear();
 
+    void setTimeatSplitIndex(const QString& time, int index);
+
 private:
     QVector<SplitItem*> m_items;
+
 };
 
 

@@ -73,7 +73,7 @@ QString Timer::formatTime(QList<qint64> timeArray, int index, const QString& sep
 }
 
 
-void Timer::setTime(const QString& newTime) {
+void Timer::setTime(const QString& newTime){
     emit timeChanged();
 
 }
@@ -83,6 +83,7 @@ void Timer::onPauseButtonClick(){
     timerPaused = !timerPaused;
     if (timerPaused){
         pausedTime = timer.elapsed() - deadTime;
+
     }else{
         resumedTime = timer.elapsed();
         deadTime = resumedTime - pausedTime;

@@ -17,6 +17,25 @@ ApplicationWindow {
     visible: true
     title: qsTr("LocalSplits")
 
+    FocusScope {
+        id: globalKeyHandler
+        focus: true   // Steal focus at launch
+        visible: false
+
+        Keys.onPressed: (event) => {
+            if (event.key === Qt.Key_Space) {
+                split.getTimer().onPauseButtonClick()
+                event.accepted = true
+            }
+            if (event.key === Qt.Key_0) {
+                split.onSplitButtonPress()
+                event.accepted = true
+            }
+
+        }
+
+    }
+
     menuBar: SplitsMenuBar {
         onNewFile: {
             split.newFile()
@@ -41,6 +60,7 @@ ApplicationWindow {
             split.name = "Test123"
         }
     }
+
 
     Pane {
         id: main
@@ -72,9 +92,11 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
 
                     onEditConfirmed: editedText => {
+                        globalKeyHandler.forceActiveFocus()
                         if (split.gameName === editedText) return
                         console.log("Game name edit: " + split.gameName + " -> " + editedText)
                         split.gameName = editedText
+
                     }
                 }
 
@@ -98,9 +120,11 @@ ApplicationWindow {
                         anchors.centerIn: parent
 
                         onEditConfirmed: editedText => {
+                            globalKeyHandler.forceActiveFocus()
                             if (split.categoryName === editedText) return
                             console.log("Category name edit: " + split.gameName + " -> " + editedText)
                             split.categoryName = editedText
+
                         }
                     }
 
@@ -121,9 +145,11 @@ ApplicationWindow {
                         // debug: true
 
                         onEditConfirmed: editedText => {
+                            globalKeyHandler.forceActiveFocus()
                             if (split.attemptCount === editedText) return
                             console.log("Category name edit: " + split.attemptCount + " -> " + editedText)
                             split.attemptCount = parseInt(editedText)
+
                         }
                     }
                 }
@@ -170,6 +196,13 @@ ApplicationWindow {
                     height:32
 
                     onClicked: split.getTimer().onPauseButtonClick()
+                }
+                Button {
+                   id: splitButton
+                    width: 32
+                    height:32
+
+                    onClicked: split.onSplitButtonPress()
                 }
 
 
