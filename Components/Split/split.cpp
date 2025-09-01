@@ -1,3 +1,7 @@
+//
+// Created by Charles on 4/6/2025.
+//
+
 #include "split.h"
 
 #include <QDir>
@@ -44,6 +48,7 @@ void Split::openFile(const QString& fileLocation) {
     for (int i = 0; i < m_layout->segments.size(); i++) {
         SplitSegment* segment = m_layout->segments.at(i);
         m_data->addItem(segment->name, "-");
+        delete segment;
     }
 
     emit gameNameChanged();

@@ -158,8 +158,8 @@ void LayoutParser::parseAttempt(QXmlStreamReader* xmlReader, SplitLayout* splitL
 
     // Add the split attempt to the attempt history.
     splitLayout->attemptHistory.push_back(splitAttempt);
-    qDebug() << "Added to AttemptHistory:" << splitAttempt.id << splitAttempt.started << splitAttempt.isStartedSynced
-             << splitAttempt.ended << splitAttempt.isEndedSynced << splitAttempt.pauseTime << Qt::endl;
+    //qDebug() << "Added to AttemptHistory:" << splitAttempt.id << splitAttempt.started << splitAttempt.isStartedSynced
+    //         << splitAttempt.ended << splitAttempt.isEndedSynced << splitAttempt.pauseTime << Qt::endl;
 }
 
 void LayoutParser::parseSegments(QXmlStreamReader* xmlReader, SplitLayout* splitLayout) {

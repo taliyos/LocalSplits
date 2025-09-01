@@ -41,18 +41,23 @@ qt_add_qml_module(appLocalSplits
         Components/SplitRow/qmldir
         Components/SplitList/qmldir
         Components/EditableLabel/qmldir
+        Components/DraggableRow/qmldir
         Components/SplitFooterButton/qmldir
         Components/SplitsMenuBar/qmldir
         Components/AboutPopup/qmldir
+        Components/GrabHandle/qmldir
     QML_FILES
         Components/SplitRow/SplitRow.qml
         Components/SplitList/SplitList.qml
         Components/EditableLabel/EditableLabel.qml
+        Components/DraggableRow/DraggableRow.qml
+        Components/DraggableRow/DragDelegate.qml
         Components/SplitFooterButton/SplitFooterButton.qml
         Components/SplitsMenuBar/SplitsMenuBar.qml
         Components/SplitsMenuBar/SplitsMenuItem.qml
         Components/SplitsMenuBar/SplitsMenu.qml
         Components/AboutPopup/AboutPopup.qml
+        Components/GrabHandle/GrabHandle.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -76,3 +81,9 @@ install(TARGETS appLocalSplits
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_custom_target(copy_icons
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/icons ${CMAKE_CURRENT_BINARY_DIR}/icons
+)
+
+add_dependencies(appLocalSplits copy_icons)

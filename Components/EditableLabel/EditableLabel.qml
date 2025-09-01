@@ -15,6 +15,10 @@ MouseArea {
     property string readFontStyle: OpenSans.bold
     property string editFontStyle: OpenSans.regular
 
+    property bool debug: false
+
+    enabled: false
+
 
     signal editStarted
     signal editConfirmed(editedText: string)
@@ -25,7 +29,7 @@ MouseArea {
     id: mouseArea
     clip: true
 
-    acceptedButtons: Qt.LeftButton
+    acceptedButtons: Qt.RightButton
     propagateComposedEvents: true
 
     function startEdit() {
@@ -39,6 +43,7 @@ MouseArea {
     }
 
     function getChildWidth() {
+        if (debug) console.log("get width: " + edit.contentWidth + " / " + label.contentWidth)
         if (isClicked) return edit.contentWidth;
         else return label.contentWidth;
     }

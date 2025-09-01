@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 11 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-8,-32)">
+        <g transform="matrix(4.8659,0,0,1.05565,-0.550277,-2.66076)">
+            <g id="GrabHandle" transform="matrix(0.0706446,0,0,0.888077,1.75718,32.8335)">
+                <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+                <g id="Dots" transform="matrix(1.45455,0,0,0.8,-7.38005,3.2)">
+                    <g id="RightDots" transform="matrix(1,0,0,1,-0.976414,-0.457429)">
+                        <g transform="matrix(1.19295,0,0,0.795298,12.4537,17.5499)">
+                            <circle cx="8.883" cy="6.247" r="2.515" style="fill:white;"/>
+                        </g>
+                        <g transform="matrix(1.19295,0,0,0.795298,12.4537,10.8389)">
+                            <circle cx="8.883" cy="6.247" r="2.515" style="fill:white;"/>
+                        </g>
+                        <g transform="matrix(1.19295,0,0,0.795298,12.4537,4.12787)">
+                            <circle cx="8.883" cy="6.247" r="2.515" style="fill:white;"/>
+                        </g>
+                    </g>
+                    <g id="RightDots1" serif:id="RightDots" transform="matrix(1,0,0,1,-12.9764,-0.457429)">
+                        <g transform="matrix(1.19295,0,0,0.795298,12.4537,17.5499)">
+                            <circle cx="8.883" cy="6.247" r="2.515" style="fill:white;"/>
+                        </g>
+                        <g transform="matrix(1.19295,0,0,0.795298,12.4537,10.8389)">
+                            <circle cx="8.883" cy="6.247" r="2.515" style="fill:white;"/>
+                        </g>
+                        <g transform="matrix(1.19295,0,0,0.795298,12.4537,4.12787)">
+                            <circle cx="8.883" cy="6.247" r="2.515" style="fill:white;"/>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

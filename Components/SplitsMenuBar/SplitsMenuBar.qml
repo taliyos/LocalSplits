@@ -45,6 +45,11 @@ MenuBar {
         }
     }
     SplitsMenu {
+        title: qsTr("Race")
+        SplitsMenuItem { text: qsTr("&Create") }
+        SplitsMenuItem { text: qsTr("C&onnect") }
+    }
+    SplitsMenu {
         title: qsTr("Help")
         SplitsMenuItem {
             text: qsTr("&About")

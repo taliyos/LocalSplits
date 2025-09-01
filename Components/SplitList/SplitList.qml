@@ -1,10 +1,13 @@
 import QtQuick
 import QtQuick.Controls
+import QtQml
+import QtQml.Models
 import QtQuick.Layouts
 import com.localsplits
 import "../SplitRow"
 import "../Fonts"
 import "../SplitFooterButton"
+import "../DraggableRow"
 
 ColumnLayout {
     property alias splitHeight: splitsList.height
@@ -68,11 +71,19 @@ ColumnLayout {
             }
         }
 
+        move: Transition {
+            NumberAnimation {
+                properties: "y"
+                duration: 100
+                easing.type: Easing.InOutSine
+            }
+        }
+
         // New items are brought into view and edited upon creation.
         onCountChanged: {
             if (addedIndex === -1) return
             currentIndex = addedIndex
-            splitsList.itemAtIndex(addedIndex).startEdit()
+            splitsList.itemAtIndex(addedIndex).getSplitRow().startEdit()
             addedIndex = -1
             console.log("\n")
         }
@@ -98,22 +109,23 @@ ColumnLayout {
             hoverTextColor: "#ffffff"
 
             function deactivateCurrentRow() {
-                if (splitsList.currentItem != null && splitsList.currentItem != this) {
-                    splitsList.currentItem.setInactive()
+                console.log(splitsList.currentItem.getSplitRow())
+                if (splitsList.currentItem != null && splitsList.currentItem.splitRow != this) {
+                    splitsList.currentItem.getSplitRow().setInactive()
                 }
             }
 
             ListView.onAdd: {
                 for (let i = index + 1; i < splitsList.count; i++) {
                     if (splitsList.itemAtIndex(i) == null) continue;
-                    splitsList.itemAtIndex(i).setInactive()
+                    splitsList.itemAtIndex(i).getSplitRow().setInactive()
                 }
             }
 
             ListView.onRemove: {
                 for (let i = index; i < splitsList.count; i++) {
                     if (splitsList.itemAtIndex(i) == null) continue;
-                    splitsList.itemAtIndex(i).setInactive()
+                    splitsList.itemAtIndex(i).getSplitRow().setInactive()
                 }
             }
 
@@ -136,7 +148,7 @@ ColumnLayout {
                 if (idx >= splitsList.count) idx = 0
                 finishEdit()
                 splitsList.currentIndex = idx
-                splitsList.itemAtIndex(idx).startEdit()
+                splitsList.itemAtIndex(idx).getSplitRow().startEdit()
             }
 
             onActivateRow: {
