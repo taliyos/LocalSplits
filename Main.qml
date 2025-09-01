@@ -118,7 +118,7 @@ ApplicationWindow {
 
                         anchors.right: parent.right
                         readFontStyle: OpenSans.italic
-                        debug: true
+                        //debug: true
 
                         onEditConfirmed: editedText => {
                             if (split.attemptCount === editedText) return
