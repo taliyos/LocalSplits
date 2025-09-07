@@ -12,5 +12,6 @@
         <file>fonts/OpenSans-Regular.ttf</file>
         <file>fonts/OpenSans-SemiBold.ttf</file>
         <file>fonts/OpenSans-SemiBoldItalic.ttf</file>
+        <file>Components/Preferences/Preferences.qml</file>
     </qresource>
 </RCC>
