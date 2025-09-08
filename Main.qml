@@ -8,6 +8,7 @@ import "Components/Fonts"
 import "Components/SplitList"
 import "Components/SplitRow"
 import "Components/EditableLabel"
+import "Components/Preferences"
 import com.localsplits
 
 ApplicationWindow {

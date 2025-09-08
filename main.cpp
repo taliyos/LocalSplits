@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("LocalSplits", "Main");
+    engine.loadFromModule("LocalSplits", "Preferences");
 
     return app.exec();
 }
