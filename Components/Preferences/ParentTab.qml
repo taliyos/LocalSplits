@@ -1,40 +1,59 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-Button {
-    id: parentTab
 
-    property alias text: tabText.text
-    signal tabSelected()    // emitted when this parent tab is clicked
+Control {
+    id: root
+    property alias text: label.text
+    property bool checked: false
 
-    width: 108
-    height: 24
-    checkable: true
-    font.pointSize: 10
-    font.family: "Open Sans"
-    topPadding: 0
-    bottomPadding: 0
-    rightPadding: 4
-    leftPadding: 4
-    checked: false
+    signal tabSelected(string tabName)
 
-    onClicked: tabSelected()   // emit signal
-
+    implicitWidth: 108
+    implicitHeight: 20
+    property var group: null
+    property var subTabGroup: null
     background: Rectangle {
-        anchors.fill: parent
         radius: 2
-        color: parentTab.checked || parentTab.down ? "#ffffff"
-              : parentTab.hovered ? "#3d3d3d"
+        color: root.checked ? "#ffffff"
+              : root.hovered ? "#3d3d3d"
               : "#1b1b1b"
     }
 
     contentItem: Text {
-        id: tabText
-        anchors.fill: parent
+        id: label
+        anchors.left: parent.left
         anchors.leftMargin: 10
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignLeft
-        color: parentTab.checked || parentTab.down ? "#000000" : "#ffffff"
-        text: parentTab.text
+        color: root.checked ? "#000000" : "#ffffff"
+        font.pointSize: 10
+        font.family: "Open Sans"
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onClicked: {
+            // uncheck all parents and all subtabs of all parents
+            if (root.group && root.group.buttons) {
+                for (let t of root.group.buttons) {   // ✅ declared t
+                    if (!t) continue;
+
+                    t.checked = false;
+
+                    // ✅ new: uncheck all subtabs of this parent (was missing for other groups)
+                    if (t.subTabGroup && t.subTabGroup.buttons) {
+                        for (let s of t.subTabGroup.buttons) {   // ✅ declared s
+                            if (!s) continue;
+                            s.checked = false;   // ✅ new: reset all subtabs
+                        }
+                    }
+                }
+            }
+
+            root.checked = true;
+            root.tabSelected(root.text);
+        }
     }
 }

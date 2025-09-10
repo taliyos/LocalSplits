@@ -13,7 +13,7 @@
         <file>fonts/OpenSans-SemiBold.ttf</file>
         <file>fonts/OpenSans-SemiBoldItalic.ttf</file>
         <file>Components/Preferences/Preferences.qml</file>
-        <file>Components/Preferences/Buttons/ParentTab.qml</file>
-        <file>Components/Preferences/Buttons/SubTab.qml</file>
+        <file>Components/Preferences/ParentTab.qml</file>
+        <file>Components/Preferences/SubTab.qml</file>
     </qresource>
 </RCC>
