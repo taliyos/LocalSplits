@@ -35,6 +35,7 @@ Window {
         QtObject {
             id: parentGroup
             property var buttons: []
+            property string activeParent: "General"
         }
 
         QtObject {
@@ -59,12 +60,83 @@ Window {
         }
 
         Column {
-            id: selectedTab
+            id: generalActiveTab
             x: 155
             y: 12
             width: 563
             height: 431
-            padding: 10
+            padding: 1
+
+            GeneralWindow {
+                id: generalWindow
+                anchors.fill: parent
+                anchors.leftMargin: 0
+                label: "General"
+                group: parentGroup
+
+                Column {
+                    id: runsActiveColumn
+                    height: 100
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 175
+                    anchors.topMargin: 10
+
+                    Column {
+                        id: column
+                        height: 20
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.leftMargin: 8
+                        anchors.rightMargin: 8
+                        anchors.topMargin: 8
+
+                        Text {
+                            id: reset
+                            color: "#ffffff"
+                            text: qsTr("Reset times when modifying a layout")
+                            font.pixelSize: 12
+                            font.family: "Open Sans"
+                        }
+
+                        DropdownBox {
+                            id: dropdownreset
+                            anchors.left: reset.right
+                            anchors.bottom: parent.bottom
+                            anchors.leftMargin: 25
+                            anchors.bottomMargin: -2
+                            options: ["Never", "Ask me", "Always"]
+                            currentText: "Never"
+                        }
+
+                        DropdownBox {
+                            id: dropdownBox
+                            anchors.left: reset.right
+                            anchors.top: parent.top
+                            anchors.leftMargin: 25
+                            anchors.topMargin: 30
+                            options: ["Never", "Ask me", "Always"]
+                            currentText: "Never"
+                        }
+
+                    }
+
+                    Rectangle {
+                        id: rectangle
+                        visible: true
+                        color: "#00ffffff"
+                        border.color: "#1b1b1b"
+                        border.width: 3
+                        anchors.fill: parent
+                    }
+                }
+
+                // custom content for General
+            }
+
         }
 
         Column {
@@ -217,7 +289,7 @@ Window {
                     Component.onCompleted: generalGroup.buttons.push(this)
                     onTabSelected: (tabName) => {
                                        console.log("Sub selected:", tabName)
-                                        // parent stays selected
+                                       // parent stays selected
                                    }
                 }
             }
@@ -349,6 +421,9 @@ Window {
             group: parentGroup
             Component.onCompleted: parentGroup.buttons.push(this)
         }
+
+
+
 
     }
 

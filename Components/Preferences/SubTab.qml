@@ -60,8 +60,21 @@ Control {
                 // 3. Check this subtab
                 root.checked = true;
 
+
+                if (root.parentTab && root.parentTab.group) {
+                    root.parentTab.group.activeParent = root.parentTab.text;
+                    root.parentTab.checked = true;
+                }
+
+
                 // 4. Emit selection signal if needed
                 root.tabSelected(root.text);
+
+
+
+
+
+
             }
         }
 

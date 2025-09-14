@@ -15,5 +15,7 @@
         <file>Components/Preferences/Preferences.qml</file>
         <file>Components/Preferences/ParentTab.qml</file>
         <file>Components/Preferences/SubTab.qml</file>
+        <file>Components/Preferences/GeneralWindow.qml</file>
+        <file>Components/Preferences/DropdownBox.qml</file>
     </qresource>
 </RCC>

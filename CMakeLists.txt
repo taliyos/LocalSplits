@@ -59,6 +59,8 @@ qt_add_qml_module(appLocalSplits
         Components/Preferences/Preferences.qml
         Components/Preferences/ParentTab.qml
         Components/Preferences/SubTab.qml
+        Components/Preferences/GeneralWindow.qml
+        Components/Preferences/DropdownBox.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

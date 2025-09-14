@@ -52,6 +52,17 @@ Control {
                 }
             }
 
+            // check this parent
+            root.checked = true;
+
+                    // ✅ update active parent
+            if (root.group) {
+                root.group.activeParent = root.text;
+            }
+
+
+
+
             root.checked = true;
             root.tabSelected(root.text);
         }
