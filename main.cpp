@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QQmlEngine>
 #include <QQuickView>
+#include <QStyleHints>
 
 #include "Components/Split/split.h"
 #include "Components/Split/splitmodel.h"
@@ -19,7 +20,11 @@ int main(int argc, char *argv[])
         QCoreApplication::setApplicationName("LocalSplits");
         QCoreApplication::setApplicationVersion("0.1");
 
+    QGuiApplication::setDesktopSettingsAware(false);
+
     QGuiApplication app(argc, argv);
+
+    app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
 
     qmlRegisterType<SplitModel>("com.localsplits", 1, 0, "SplitModel");
     qmlRegisterUncreatableType<SplitListData>("com.localsplits", 1, 0, "SplitListData", QStringLiteral("SplitListData should not be created in QML"));

@@ -47,9 +47,6 @@ public:
     void setAttemptCount(const int& attemptCount);
 
 
-    // void setTimer();
-
-
 signals:
     void layoutChanged();
     void gameNameChanged();
@@ -63,16 +60,16 @@ signals:
 public slots:
     void openFile(const QString& fileLocation);
     void newFile();
-    Timer* getTimer();
     void onResetButtonPress();
     void onSplitButtonPress();
+    Timer* getTimer();
 
 private:
     SplitLayout* m_layout;
     SplitListData* m_data;
     Timer* m_timer;
 
-    int splitrow = 0;
+    int m_splitrow = 0;
 };
 
 

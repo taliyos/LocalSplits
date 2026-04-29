@@ -4,8 +4,6 @@
 #include <unistd.h>
 #include <qDebug>
 
-//
-
 
 Timer::Timer(const int& updateMilisecondInterval, QObject *parent) : QObject{parent} {
     this->updateMilisecondInterval = updateMilisecondInterval;
@@ -95,6 +93,5 @@ void Timer::reset(){
     pausedTime = 0;
     resumedTime = 0;
     deadTime = 0;
-    // timer.invalidate();
 
 }

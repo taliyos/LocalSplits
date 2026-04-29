@@ -33,18 +33,18 @@ Timer* Split::getTimer() {
 
 void Split::onSplitButtonPress(){
 
-    if (m_data->items().size() <= splitrow){
+    if (m_data->items().size() <= m_splitrow){
         qDebug() << "NO more splits";
         return;
     }
-    m_data->setTimeatSplitIndex(m_timer->getTime(), splitrow);
+    m_data->setTimeatSplitIndex(m_timer->getTime(), m_splitrow);
 
-    splitrow++;
+    m_splitrow++;
 }
 
 void Split::onResetButtonPress(){
     m_timer->reset();
-    splitrow = 0;
+    m_splitrow = 0;
     for(int i = 0; i < (m_data->items().count()); ++i){
         m_data->setTimeatSplitIndex(0, i);
     }
@@ -100,7 +100,7 @@ QString Split::getGameName() const {
 
 void Split::setGameName(const QString& name) {
     m_layout->gameName = name;
-    // emit gameNameChanged();
+    emit gameNameChanged();
 }
 
 QString Split::getCategoryName() const{

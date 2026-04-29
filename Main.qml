@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Dialogs
+
 import "Components/Fonts"
 import "Components/SplitList"
 import "Components/SplitRow"
@@ -16,6 +17,7 @@ ApplicationWindow {
     height: 480
     visible: true
     title: qsTr("LocalSplits")
+
 
     FocusScope {
         id: globalKeyHandler
@@ -187,22 +189,6 @@ ApplicationWindow {
                     Layout.fillWidth: true
                 }
 
-                Button {
-                   id: pauseButton
-                    width: 32
-                    height:32
-
-                    onClicked: split.getTimer().onPauseButtonClick()
-                }
-                Button {
-                   id: splitButton
-                    width: 32
-                    height:32
-
-                    onClicked: split.onSplitButtonPress()
-                }
-
-
             }
 
             SplitRow {
@@ -215,9 +201,9 @@ ApplicationWindow {
             }
         }
 
-        background: Rectangle {
-            color: "#1e1e1e"
-        }
+        // background: Rectangle {
+        //     color: "#1e1e1e"
+        // }
 
     }
 
