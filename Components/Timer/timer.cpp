@@ -1,4 +1,3 @@
-
 #include "timer.h"
 #include <iostream>
 #include <QTimer>
@@ -78,7 +77,7 @@ void Timer::setTime(const QString& newTime){
 
 }
 
-void Timer::onPauseButtonClick(){
+void Timer::onPauseButtonPress(){
 
     timerPaused = !timerPaused;
     if (timerPaused){
@@ -88,5 +87,14 @@ void Timer::onPauseButtonClick(){
         resumedTime = timer.elapsed();
         deadTime = resumedTime - pausedTime;
     }
+
+}
+
+void Timer::reset(){
+    timerPaused = true;
+    pausedTime = 0;
+    resumedTime = 0;
+    deadTime = 0;
+    // timer.invalidate();
 
 }

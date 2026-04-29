@@ -5,14 +5,30 @@ project(LocalSplits VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core Qml)
+
 
 qt_standard_project_setup(REQUIRES 6.5)
+
+include(FetchContent)
+FetchContent_Declare(
+    QHotkey
+    GIT_REPOSITORY https://github.com/Skycoder42/QHotkey.git
+    GIT_TAG        master
+)
+set(QHOTKEY_INSTALL OFF CACHE BOOL "" FORCE)
+set(QT_DEFAULT_MAJOR_VERSION 6 CACHE STRING "" FORCE)
+
+file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/README.md" "")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+
+FetchContent_MakeAvailable(QHotkey)
+
 
 qt_add_executable(appLocalSplits
     main.cpp Resources.qrc
         Components/Split/splitmodel.cpp
-        Components/Split/splitmodel.h
+        Components/Split/splitmodel.h       
         Components/Split/splititem.h
         Components/SplitList/splitlistdata.cpp
         Components/SplitList/splitlistdata.h
@@ -20,6 +36,8 @@ qt_add_executable(appLocalSplits
         Components/Split/split.h
         Components/Timer/timer.cpp
         Components/Timer/timer.h
+        Components/Timer/hotkeymanager.h
+        Components/Timer/hotkeymanager.cpp
 )
 
 qt_add_qml_module(appLocalSplits
@@ -40,6 +58,8 @@ qt_add_qml_module(appLocalSplits
     SOURCES Components/SplitLayoutParsing/splitmetadata.h
     SOURCES Components/SplitLayoutParsing/splitattempt.h
     SOURCES Components/SplitLayoutParsing/splitlayout.h
+    SOURCES Components/Timer/hotkeymanager.h
+    SOURCES Components/Timer/hotkeymanager.cpp
     SOURCES Components/SplitRow/splitrowmodel.h Components/SplitRow/splitrowmodel.cpp
     RESOURCES
         Components/SplitRow/qmldir
@@ -58,7 +78,6 @@ qt_add_qml_module(appLocalSplits
         Components/SplitsMenuBar/SplitsMenu.qml
         Components/AboutPopup/AboutPopup.qml
 
-
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -74,6 +93,10 @@ set_target_properties(appLocalSplits PROPERTIES
 
 target_link_libraries(appLocalSplits
     PRIVATE Qt6::Quick
+    PRIVATE Qt6::Core
+    PRIVATE Qt6::Qml
+    PRIVATE QHotkey::QHotkey
+    qhotkey
 )
 
 include(GNUInstallDirs)

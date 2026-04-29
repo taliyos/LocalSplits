@@ -3,6 +3,7 @@
 #include <QDir>
 #include <iostream>
 #include <qurl.h>
+#include <qDebug>
 
 #include "Components/SplitLayoutParsing/layoutparser.h"
 #include "Components/SplitList/splitlistdata.h"
@@ -10,7 +11,7 @@
 Split::Split(QObject *parent) : QObject(parent) {
     m_layout = new SplitLayout();
     m_data = new SplitListData();
-    m_timer = new Timer(5);
+    m_timer = new Timer(5, this);
 }
 
 Split::~Split() {
@@ -40,6 +41,15 @@ void Split::onSplitButtonPress(){
 
     splitrow++;
 }
+
+void Split::onResetButtonPress(){
+    m_timer->reset();
+    splitrow = 0;
+    for(int i = 0; i < (m_data->items().count()); ++i){
+        m_data->setTimeatSplitIndex(0, i);
+    }
+}
+
 
 void Split::openFile(const QString& fileLocation) {
     delete m_layout;

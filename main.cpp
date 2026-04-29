@@ -1,3 +1,4 @@
+
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
@@ -10,10 +11,13 @@
 #include "Components/SplitLayoutParsing/layoutparser.h"
 #include "Components/SplitList/splitlistdata.h"
 
+#include "Components/Timer/hotkeymanager.h"
+
+
 int main(int argc, char *argv[])
-{
-    QCoreApplication::setApplicationName("LocalSplits");
-    QCoreApplication::setApplicationVersion("0.1");
+    {
+        QCoreApplication::setApplicationName("LocalSplits");
+        QCoreApplication::setApplicationVersion("0.1");
 
     QGuiApplication app(argc, argv);
 
@@ -22,6 +26,12 @@ int main(int argc, char *argv[])
 
     Split* split = new Split();
     // split->openFile("tests\\testLayout.lss");
+
+    HotkeyManager hotkeys(&app);
+
+    QObject::connect(&hotkeys, &HotkeyManager::pausePressed, split->getTimer(), &Timer::onPauseButtonPress);
+    QObject::connect(&hotkeys, &HotkeyManager::splitPressed, split, &Split::onSplitButtonPress);
+    QObject::connect(&hotkeys, &HotkeyManager::resetPressed, split, &Split::onResetButtonPress);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("split"), split);

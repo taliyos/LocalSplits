@@ -31,9 +31,7 @@ ApplicationWindow {
                 split.onSplitButtonPress()
                 event.accepted = true
             }
-
         }
-
     }
 
     menuBar: SplitsMenuBar {
@@ -52,7 +50,6 @@ ApplicationWindow {
         acceptLabel: "Open Splits"
         fileMode: FileDialog.OpenFile
         nameFilters: ["LocalSplits (*.localsplits)", "LiveSplit (*.lss)"]
-
         onAccepted: {
             console.log("file opened")
             //console.log(split.getName())
@@ -66,7 +63,7 @@ ApplicationWindow {
         id: main
         anchors.fill: parent
         padding: 4
-
+    
         ColumnLayout {
             width: parent.width
             height: parent.height

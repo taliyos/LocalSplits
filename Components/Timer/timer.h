@@ -22,7 +22,8 @@ public:
 public slots:
     QString getTime();
 
-    void onPauseButtonClick();
+    void onPauseButtonPress();
+    void reset();
 
 signals:
     void timeChanged();

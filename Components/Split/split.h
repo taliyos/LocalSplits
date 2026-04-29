@@ -64,7 +64,7 @@ public slots:
     void openFile(const QString& fileLocation);
     void newFile();
     Timer* getTimer();
-
+    void onResetButtonPress();
     void onSplitButtonPress();
 
 private:
