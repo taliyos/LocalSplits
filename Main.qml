@@ -141,7 +141,6 @@ ApplicationWindow {
 
                         anchors.right: parent.right
                         readFontStyle: OpenSans.italic
-                        // debug: true
 
                         onEditConfirmed: editedText => {
                             globalKeyHandler.forceActiveFocus()

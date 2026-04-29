@@ -50,7 +50,7 @@ qt_add_qml_module(appLocalSplits
     RESOURCES Components/Fonts/qmldir
     RESOURCES Resources.qrc
     SOURCES
-    SOURCES Components/Timer/timer.cpp Components/Timer/timer.h
+    
     SOURCES Components/SplitLayoutParsing/layoutparser.cpp Components/SplitLayoutParsing/layoutparser.h   Components/SplitLayoutParsing/splitsegment.h Components/SplitLayoutParsing/splittime.h
     SOURCES Components/SplitLayoutParsing/timemethod.h
     SOURCES Components/SplitLayoutParsing/segmenttime.h
@@ -58,6 +58,8 @@ qt_add_qml_module(appLocalSplits
     SOURCES Components/SplitLayoutParsing/splitmetadata.h
     SOURCES Components/SplitLayoutParsing/splitattempt.h
     SOURCES Components/SplitLayoutParsing/splitlayout.h
+    SOURCES Components/Timer/timer.cpp 
+    SOURCES Components/Timer/timer.h
     SOURCES Components/Timer/hotkeymanager.h
     SOURCES Components/Timer/hotkeymanager.cpp
     SOURCES Components/SplitRow/splitrowmodel.h Components/SplitRow/splitrowmodel.cpp
