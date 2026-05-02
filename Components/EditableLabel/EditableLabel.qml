@@ -3,11 +3,13 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import "../Fonts"
+import "../Theme"
 
 MouseArea {
+    id: mouseArea
     property bool isClicked: false
     property string text: "Text"
-    property color textColor: "#ffffff"
+    property color textColor: Theme.textPrimaryColor
     property int pointSize: 10
     property int wrapMode: Text.NoWrap
     property int horizontalAlignment: Text.AlignLeft
@@ -15,41 +17,42 @@ MouseArea {
     property string readFontStyle: OpenSans.bold
     property string editFontStyle: OpenSans.regular
 
-
     signal editStarted
     signal editConfirmed(editedText: string)
     signal editFinished
     signal editCancelled
     signal itemTabbed
-
-    id: mouseArea
     clip: true
 
     acceptedButtons: Qt.LeftButton
     propagateComposedEvents: true
 
     function startEdit() {
-        isClicked = !isClicked
+        isClicked = !isClicked;
         if (isClicked) {
-            edit.forceActiveFocus()
-            edit.cursorPosition = edit.length
-            edit.selectAll()
+            edit.forceActiveFocus();
+            edit.cursorPosition = edit.length;
+            edit.selectAll();
         }
-        editStarted()
+        editStarted();
     }
 
     function getChildWidth() {
-        if (isClicked) return edit.contentWidth;
-        else return label.contentWidth;
+        if (isClicked)
+            return edit.contentWidth;
+        else
+            return label.contentWidth;
     }
 
     function getChildHeight() {
-        if (isClicked) return edit.contentHeight;
-        else return label.contentHeight;
+        if (isClicked)
+            return edit.contentHeight;
+        else
+            return label.contentHeight;
     }
 
     onDoubleClicked: {
-        startEdit()
+        startEdit();
     }
 
     Label {
@@ -88,36 +91,33 @@ MouseArea {
         visible: parent.isClicked
         wrapMode: mouseArea.wrapMode
 
-
         onEditingFinished: {
-            parent.focus = false
-            console.log("editing finished for " + parent.text)
-            parent.editConfirmed(text)
+            parent.focus = false;
+            console.log("editing finished for " + parent.text);
+            parent.editConfirmed(text);
         }
 
         onFocusChanged: {
             if (!focus) {
-                parent.isClicked = false
-                setInactive()
+                parent.isClicked = false;
+                setInactive();
             }
         }
 
         Keys.onPressed: event => {
             if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                event.accepted = true
-                focus = false
-                parent.editFinished()
-            }
-            else if (event.key === Qt.Key_Tab) {
-                event.accepted = true
-                focus = false
-                parent.itemTabbed()
-            }
-            else if (event.key === Qt.Key_Escape) {
-                event.accepted = true
-                text = parent.text
-                focus = false
-                parent.editCancelled()
+                event.accepted = true;
+                focus = false;
+                parent.editFinished();
+            } else if (event.key === Qt.Key_Tab) {
+                event.accepted = true;
+                focus = false;
+                parent.itemTabbed();
+            } else if (event.key === Qt.Key_Escape) {
+                event.accepted = true;
+                text = parent.text;
+                focus = false;
+                parent.editCancelled();
             }
         }
     }

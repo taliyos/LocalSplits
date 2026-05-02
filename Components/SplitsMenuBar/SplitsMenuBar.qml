@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import "../AboutPopup"
+import "../Theme"
 
 MenuBar {
     id: menuBar
@@ -74,7 +75,7 @@ MenuBar {
             text: menuBarItem.text
             font: menuBarItem.font
             opacity: enabled ? 1.0 : 0.3
-            color: "#ffffff"
+            color: Theme.textPrimaryColor
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
@@ -84,7 +85,7 @@ MenuBar {
             implicitWidth: 40
             implicitHeight: 20
             opacity: enabled ? 1 : 0.3
-            color: menuBarItem.highlighted ? "#3d3d3d" : "#00000000"
+            color: menuBarItem.highlighted ? Theme.hoverColor : Theme.backgroundColor
         }
     }
 
@@ -94,7 +95,7 @@ MenuBar {
         color: "#1e1e1e"
 
         Rectangle {
-            color: "#2b2b2b"
+            color: Theme.accentColor
             width: parent.width
             height: 1
             anchors.bottom: parent.bottom

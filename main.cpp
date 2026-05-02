@@ -37,6 +37,9 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("split"), split);
     engine.rootContext()->setContextProperty(QStringLiteral("gameName"), QVariant(split->getLayout()->gameName));
     engine.rootContext()->setContextProperty(QStringLiteral("splitList"), split->getData());
+    //engine.rootContext()->setContextProperty(QStringLiteral("theme"), QStringLiteral("dark"));
+    engine.rootContext()->setContextProperty(QStringLiteral("theme"), QStringLiteral("light-orange"));
+    //engine.rootContext()->setContextProperty(QStringLiteral("theme"), QStringLiteral("high-contrast"));
 
     QObject::connect(
         &engine,

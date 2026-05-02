@@ -4,11 +4,14 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Dialogs
+import QtQuick.Controls.Material
 
 import "Components/Fonts"
 import "Components/SplitList"
 import "Components/SplitRow"
 import "Components/EditableLabel"
+import "Components/SplitsMenuBar"
+import "Components/Theme"
 import com.localsplits
 
 ApplicationWindow {
@@ -17,23 +20,6 @@ ApplicationWindow {
     height: 480
     visible: true
     title: qsTr("LocalSplits")
-
-    FocusScope {
-        id: globalKeyHandler
-        focus: true   // Steal focus at launch
-        visible: false
-
-        Keys.onPressed: event => {
-            if (event.key === Qt.Key_Space) {
-                split.getTimer().onPauseButtonClick();
-                event.accepted = true;
-            }
-            if (event.key === Qt.Key_0) {
-                split.onSplitButtonPress();
-                event.accepted = true;
-            }
-        }
-    }
 
     menuBar: SplitsMenuBar {
         onNewFile: {
@@ -181,7 +167,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    color: "#ffffff"
+                    color: Theme.textPrimaryColor
                 }
             }
 
@@ -190,13 +176,11 @@ ApplicationWindow {
 
                 name: "Previous Segment"
                 time: "-"
-
-                color: "#00000000"
             }
         }
 
         background: Rectangle {
-            color: "#1e1e1e"
+            color: Theme.backgroundColor
         }
     }
 

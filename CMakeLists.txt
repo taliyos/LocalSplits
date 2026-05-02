@@ -40,6 +40,8 @@ qt_add_executable(appLocalSplits
         Components/Timer/hotkeymanager.cpp
 )
 
+set_source_files_properties(Components/Theme/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+
 qt_add_qml_module(appLocalSplits
     URI LocalSplits
     VERSION 1.0
@@ -70,6 +72,7 @@ qt_add_qml_module(appLocalSplits
         Components/SplitFooterButton/qmldir
         Components/SplitsMenuBar/qmldir
         Components/AboutPopup/qmldir
+        Components/Theme/qmldir
     QML_FILES
         Components/SplitRow/SplitRow.qml
         Components/SplitList/SplitList.qml
@@ -79,7 +82,7 @@ qt_add_qml_module(appLocalSplits
         Components/SplitsMenuBar/SplitsMenuItem.qml
         Components/SplitsMenuBar/SplitsMenu.qml
         Components/AboutPopup/AboutPopup.qml
-
+        Components/Theme/Theme.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

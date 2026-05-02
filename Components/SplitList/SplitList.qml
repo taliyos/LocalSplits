@@ -5,16 +5,15 @@ import com.localsplits
 import "../SplitRow"
 import "../Fonts"
 import "../SplitFooterButton"
+import "../Theme"
 
 ColumnLayout {
+    id: splitListLayout
     property alias splitHeight: splitsList.height
 
-    id: splitListLayout
-
     ListView {
-        clip: true
-
         id: splitsList
+        clip: true
         Layout.fillWidth: true
         Layout.fillHeight: true
 
@@ -70,11 +69,12 @@ ColumnLayout {
 
         // New items are brought into view and edited upon creation.
         onCountChanged: {
-            if (addedIndex === -1) return
-            currentIndex = addedIndex
-            splitsList.itemAtIndex(addedIndex).startEdit()
-            addedIndex = -1
-            console.log("\n")
+            if (addedIndex === -1)
+                return;
+            currentIndex = addedIndex;
+            splitsList.itemAtIndex(addedIndex).startEdit();
+            addedIndex = -1;
+            console.log("\n");
         }
 
         model: SplitModel {
@@ -88,76 +88,81 @@ ColumnLayout {
             name: model.name
             time: model.time
 
-            splitColor: index % 2 === 0 ? "#2b2b2b" : "#00000000"
-            textColor: "#ffffff"
+            splitColor: index % 2 === 0 ? Theme.accentColor : Theme.backgroundColor
+            textColor: Theme.textPrimaryColor
 
-            highlightBackgroundColor: "#ffffff"
-            highlightTextColor: "#000000"
+            highlightBackgroundColor: Theme.hoverColor
+            highlightTextColor: Theme.textHoverColor
 
-            hoverBackgroundColor: "#3d3d3d"
-            hoverTextColor: "#ffffff"
+            hoverBackgroundColor: Theme.hoverColor
+            hoverTextColor: Theme.textHoverColor
 
             function deactivateCurrentRow() {
                 if (splitsList.currentItem != null && splitsList.currentItem != this) {
-                    splitsList.currentItem.setInactive()
+                    splitsList.currentItem.setInactive();
                 }
             }
 
             ListView.onAdd: {
                 for (let i = index + 1; i < splitsList.count; i++) {
-                    if (splitsList.itemAtIndex(i) == null) continue;
-                    splitsList.itemAtIndex(i).setInactive()
+                    if (splitsList.itemAtIndex(i) == null)
+                        continue;
+                    splitsList.itemAtIndex(i).setInactive();
                 }
             }
 
             ListView.onRemove: {
                 for (let i = index; i < splitsList.count; i++) {
-                    if (splitsList.itemAtIndex(i) == null) continue;
-                    splitsList.itemAtIndex(i).setInactive()
+                    if (splitsList.itemAtIndex(i) == null)
+                        continue;
+                    splitsList.itemAtIndex(i).setInactive();
                 }
             }
 
             onNameEditConfirmed: editedText => {
-                if (model.name === editedText) return
-                console.log("Name edit: " + model.name + " -> " + editedText)
-                model.name = editedText
-                name = editedText
-                globalKeyHandler.forceActiveFocus()
+                if (model.name === editedText)
+                    return;
+                console.log("Name edit: " + model.name + " -> " + editedText);
+                model.name = editedText;
+                name = editedText;
+                globalKeyHandler.forceActiveFocus();
             }
 
             onTimeEditConfirmed: editedText => {
-                if (model.time === editedText) return
-                console.log("Time edit: " + model.time + " -> " + editedText)
-                model.time = editedText
-                time = editedText
-                globalKeyHandler.forceActiveFocus()
+                if (model.time === editedText)
+                    return;
+                console.log("Time edit: " + model.time + " -> " + editedText);
+                model.time = editedText;
+                time = editedText;
+                globalKeyHandler.forceActiveFocus();
             }
 
             onTabToNextRow: {
-                let idx = index + 1
-                if (idx >= splitsList.count) idx = 0
-                finishEdit()
-                splitsList.currentIndex = idx
-                splitsList.itemAtIndex(idx).startEdit()
+                let idx = index + 1;
+                if (idx >= splitsList.count)
+                    idx = 0;
+                finishEdit();
+                splitsList.currentIndex = idx;
+                splitsList.itemAtIndex(idx).startEdit();
             }
 
             onActivateRow: {
-                deactivateCurrentRow()
+                deactivateCurrentRow();
             }
 
             onDuplicate: {
-                splitsList.addedIndex = index + 1
-                console.log(splitsList.addedIndex)
-                splitList.addItem(model.name, model.time, index + 1)
+                splitsList.addedIndex = index + 1;
+                console.log(splitsList.addedIndex);
+                splitList.addItem(model.name, model.time, index + 1);
             }
 
             onRemove: {
-                splitList.removeItem(index)
+                splitList.removeItem(index);
             }
         }
 
         footer: Rectangle {
-            color: "#2b2b2b"
+            color: Theme.accentColor
 
             width: 50
             height: 25
@@ -175,11 +180,11 @@ ColumnLayout {
                     layoutWidth: parent.width / 2
 
                     backgroundNormalColor: "transparent"
-                    backgroundHoverColor: "#3d3d3d"
-                    backgroundPressedColor: "#ffffff"
-                    textNormalColor: "#ffffff"
-                    textHoverColor: "#ffffff"
-                    textPressedColor: "#000000"
+                    backgroundHoverColor: Theme.hoverColor
+                    backgroundPressedColor: Theme.selectedColor
+                    textNormalColor: Theme.textPrimaryColor
+                    textHoverColor: Theme.textHoverColor
+                    textPressedColor: Theme.textSelectedColor
 
                     bottomLeftRadius: 2
                     bottomRightRadius: 0
@@ -187,8 +192,8 @@ ColumnLayout {
                     topLeftRadius: 0
 
                     onClicked: {
-                        splitsList.addedIndex = splitsList.count
-                        splitList.addItem()
+                        splitsList.addedIndex = splitsList.count;
+                        splitList.addItem();
                     }
                 }
 
@@ -197,11 +202,11 @@ ColumnLayout {
                     layoutWidth: 25
 
                     backgroundNormalColor: "transparent"
-                    backgroundHoverColor: "#3d3d3d"
-                    backgroundPressedColor: "#ffffff"
-                    textNormalColor: "#ffffff"
-                    textHoverColor: "#ffffff"
-                    textPressedColor: "#000000"
+                    backgroundHoverColor: Theme.hoverColor
+                    backgroundPressedColor: Theme.selectedColor
+                    textNormalColor: Theme.textPrimaryColor
+                    textHoverColor: Theme.textHoverColor
+                    textPressedColor: Theme.textSelectedColor
 
                     bottomLeftRadius: 0
                     bottomRightRadius: 2
@@ -209,7 +214,7 @@ ColumnLayout {
                     topLeftRadius: 0
 
                     onClicked: {
-                        splitList.removeItem(splitsList.count - 1)
+                        splitList.removeItem(splitsList.count - 1);
                     }
                 }
             }

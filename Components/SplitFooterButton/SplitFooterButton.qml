@@ -3,16 +3,17 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Basic
 import "../Fonts"
+import "../Theme"
 
 Button {
     property alias contentText: content.text
     property real layoutWidth: 15
-    property color backgroundNormalColor: "transparent"
-    property color backgroundHoverColor: "#3d3d3d"
-    property color backgroundPressedColor: "#ffffff"
-    property color textNormalColor: "#ffffff"
-    property color textHoverColor: "#ffffff"
-    property color textPressedColor: "#000000"
+    property color backgroundNormalColor: Theme.backgroundColor
+    property color backgroundHoverColor: Theme.hoverColor
+    property color backgroundPressedColor: Theme.selectedColor
+    property color textNormalColor: Theme.textPrimaryColor
+    property color textHoverColor: Theme.textHoverColor
+    property color textPressedColor: Theme.textSelectedColor
 
     property alias bottomRightRadius: bg.bottomRightRadius
     property alias bottomLeftRadius: bg.bottomLeftRadius

@@ -4,21 +4,23 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import "../Fonts"
 import "../EditableLabel"
+import "../Theme"
 
 MouseArea {
+    id: split
     property string name: "Split Name"
     property string time: "00:00:00.00"
-    property color textColor: "#ffffff"
-    property color splitColor
+    property color textColor: Theme.textPrimaryColor
+    property color splitColor: Theme.accentColor
 
-    property color highlightBackgroundColor
-    property color highlightTextColor
+    property color highlightBackgroundColor: Theme.hoverColor
+    property color highlightTextColor: Theme.textHoverColor
 
     property color currentTextColor: textColor
     property color currentBackgroundColor: splitColor
 
-    property color hoverBackgroundColor
-    property color hoverTextColor
+    property color hoverBackgroundColor: Theme.hoverColor
+    property color hoverTextColor: Theme.textHoverColor
 
     property alias color: rect.color
 
@@ -26,12 +28,10 @@ MouseArea {
 
     signal nameEditConfirmed(string editedText)
     signal timeEditConfirmed(string editedText)
-    signal tabToNextRow()
-    signal activateRow()
-    signal duplicate()
-    signal remove()
-
-    id: split
+    signal tabToNextRow
+    signal activateRow
+    signal duplicate
+    signal remove
 
     height: 30
     Layout.fillWidth: true
@@ -39,13 +39,13 @@ MouseArea {
     hoverEnabled: true
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton
-    onClicked: (mouse) => {
+    onClicked: mouse => {
         if (mouse.button === Qt.RightButton)
-            contextMenu.popup()
+            contextMenu.popup();
     }
-    onPressAndHold: (mouse) => {
+    onPressAndHold: mouse => {
         if (mouse.source === Qt.MouseEventNotSynthesized)
-            contextMenu.popup()
+            contextMenu.popup();
     }
 
     Menu {
@@ -70,7 +70,7 @@ MouseArea {
                 font.pointSize: 10
                 font.family: OpenSans.family
                 font.styleName: OpenSans.regular
-                color: parent.highlighted ? parent.down ? split.highlightTextColor: split.hoverTextColor : split.textColor
+                color: parent.highlighted ? parent.down ? split.highlightTextColor : split.hoverTextColor : split.textColor
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -91,7 +91,7 @@ MouseArea {
                 font.pointSize: 10
                 font.family: OpenSans.family
                 font.styleName: OpenSans.regular
-                color: parent.highlighted ? parent.down ? split.highlightTextColor: split.hoverTextColor : split.textColor
+                color: parent.highlighted ? parent.down ? split.highlightTextColor : split.hoverTextColor : split.textColor
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -112,7 +112,7 @@ MouseArea {
                 font.pointSize: 10
                 font.family: OpenSans.family
                 font.styleName: OpenSans.regular
-                color: parent.highlighted ? parent.down ? split.highlightTextColor: split.hoverTextColor : split.textColor
+                color: parent.highlighted ? parent.down ? split.highlightTextColor : split.hoverTextColor : split.textColor
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -133,44 +133,46 @@ MouseArea {
     }
 
     onEntered: {
-        if (active) return
-        startHover()
+        if (active)
+            return;
+        startHover();
     }
 
     onExited: {
-        if (active) return
-        setInactive()
+        if (active)
+            return;
+        setInactive();
     }
 
     function setActive() {
-        active = true
-        currentBackgroundColor = highlightBackgroundColor
-        currentTextColor = highlightTextColor
-        activateRow()
+        active = true;
+        currentBackgroundColor = highlightBackgroundColor;
+        currentTextColor = highlightTextColor;
+        activateRow();
     }
 
     function setInactive() {
-        active = false
+        active = false;
         if (containsMouse) {
-            startHover()
-            return
+            startHover();
+            return;
         }
-        currentBackgroundColor = splitColor
-        currentTextColor = textColor
+        currentBackgroundColor = splitColor;
+        currentTextColor = textColor;
     }
 
     function startEdit() {
-        splitName.startEdit()
+        splitName.startEdit();
     }
 
     function finishEdit() {
-        console.log("finish edit")
-        setInactive()
+        console.log("finish edit");
+        setInactive();
     }
 
     function startHover() {
-        currentBackgroundColor = hoverBackgroundColor
-        currentTextColor = hoverTextColor
+        currentBackgroundColor = hoverBackgroundColor;
+        currentTextColor = hoverTextColor;
     }
 
     Rectangle {
@@ -202,29 +204,29 @@ MouseArea {
                 Layout.leftMargin: 4
 
                 onEditStarted: {
-                    split.setActive()
+                    split.setActive();
                 }
 
                 // Confirm edit for name
                 onEditConfirmed: editedText => {
-                    console.log("name edit confirmed")
-                    split.nameEditConfirmed(editedText)
+                    console.log("name edit confirmed");
+                    split.nameEditConfirmed(editedText);
                 }
 
                 onEditFinished: {
-                    console.log("name edit finished")
-                    split.setInactive()
+                    console.log("name edit finished");
+                    split.setInactive();
                 }
 
                 onEditCancelled: {
-                    console.log("name edit cancelled")
-                    split.setInactive()
+                    console.log("name edit cancelled");
+                    split.setInactive();
                 }
 
                 // Tab from name -> time
                 onItemTabbed: {
-                    console.log("name edit tab out")
-                    splitTime.startEdit()
+                    console.log("name edit tab out");
+                    splitTime.startEdit();
                 }
             }
 
@@ -241,29 +243,29 @@ MouseArea {
                 Layout.minimumWidth: getChildWidth()
 
                 onEditStarted: {
-                    split.setActive()
+                    split.setActive();
                 }
 
                 // Confirm edit for time
                 onEditConfirmed: editedText => {
-                    console.log("time edit confirmed")
-                    split.timeEditConfirmed(editedText)
+                    console.log("time edit confirmed");
+                    split.timeEditConfirmed(editedText);
                 }
 
                 onEditFinished: {
-                    console.log("time edit finished")
-                    split.setInactive()
+                    console.log("time edit finished");
+                    split.setInactive();
                 }
 
                 onEditCancelled: {
-                    console.log("time edit cancelled")
-                    split.setInactive()
+                    console.log("time edit cancelled");
+                    split.setInactive();
                 }
 
                 // Tab from time -> next row
                 onItemTabbed: {
-                    console.log("time edit tab out")
-                    tabToNextRow()
+                    console.log("time edit tab out");
+                    tabToNextRow();
                 }
             }
         }

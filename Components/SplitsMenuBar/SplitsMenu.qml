@@ -4,11 +4,13 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 
+import "../Theme"
+
 Menu {
     background: Rectangle {
         implicitWidth: 100
-        color: "#1e1e1e"
-        border.color: "#3c3c3c"
+        color: Theme.primaryColor
+        border.color: Theme.borderColor
         radius: 2
     }
 }

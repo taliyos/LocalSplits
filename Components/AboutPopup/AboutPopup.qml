@@ -3,6 +3,7 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import "../Fonts"
+import "../Theme"
 
 Window {
     title: qsTr("About")
@@ -18,7 +19,7 @@ Window {
         ColumnLayout {
             Label {
                 text: `${Application.displayName} (${Application.version})`
-                color: "#ffffff"
+                color: Theme.textPrimaryColor
                 font.family: OpenSans.family
                 font.styleName: OpenSans.bold
                 font.pointSize: 16
@@ -26,7 +27,7 @@ Window {
 
             Label {
                 text: "Created by Charles Reverand and Pranav Tripuraneni"
-                color: "#ffffff"
+                color: Theme.textPrimaryColor
                 font.family: OpenSans.family
                 font.styleName: OpenSans.regular
                 font.pointSize: 10
@@ -34,7 +35,7 @@ Window {
 
             Label {
                 text: "Licenses & Attributions"
-                color: "#ffffff"
+                color: Theme.textPrimaryColor
                 font.family: OpenSans.family
                 font.styleName: OpenSans.regular
                 font.pointSize: 10
@@ -45,7 +46,7 @@ Window {
                 textFormat: Text.RichText
                 onLinkActivated: Qt.openUrlExternally(link)
 
-                color: "#ffffff"
+                color: Theme.textPrimaryColor
                 font.family: OpenSans.family
                 font.styleName: OpenSans.regular
                 font.pointSize: 10
