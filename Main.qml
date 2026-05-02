@@ -18,31 +18,30 @@ ApplicationWindow {
     visible: true
     title: qsTr("LocalSplits")
 
-
     FocusScope {
         id: globalKeyHandler
         focus: true   // Steal focus at launch
         visible: false
 
-        Keys.onPressed: (event) => {
+        Keys.onPressed: event => {
             if (event.key === Qt.Key_Space) {
-                split.getTimer().onPauseButtonClick()
-                event.accepted = true
+                split.getTimer().onPauseButtonClick();
+                event.accepted = true;
             }
             if (event.key === Qt.Key_0) {
-                split.onSplitButtonPress()
-                event.accepted = true
+                split.onSplitButtonPress();
+                event.accepted = true;
             }
         }
     }
 
     menuBar: SplitsMenuBar {
         onNewFile: {
-            split.newFile()
+            split.newFile();
         }
 
         onOpen: {
-            openFileDialog.open()
+            openFileDialog.open();
         }
     }
 
@@ -53,19 +52,18 @@ ApplicationWindow {
         fileMode: FileDialog.OpenFile
         nameFilters: ["LocalSplits (*.localsplits)", "LiveSplit (*.lss)"]
         onAccepted: {
-            console.log("file opened")
+            console.log("file opened");
             //console.log(split.getName())
-            split.openFile(selectedFile)
-            split.name = "Test123"
+            split.openFile(selectedFile);
+            split.name = "Test123";
         }
     }
-
 
     Pane {
         id: main
         anchors.fill: parent
         padding: 4
-    
+
         ColumnLayout {
             width: parent.width
             height: parent.height
@@ -91,11 +89,11 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
 
                     onEditConfirmed: editedText => {
-                        globalKeyHandler.forceActiveFocus()
-                        if (split.gameName === editedText) return
-                        console.log("Game name edit: " + split.gameName + " -> " + editedText)
-                        split.gameName = editedText
-
+                        globalKeyHandler.forceActiveFocus();
+                        if (split.gameName === editedText)
+                            return;
+                        console.log("Game name edit: " + split.gameName + " -> " + editedText);
+                        split.gameName = editedText;
                     }
                 }
 
@@ -119,11 +117,11 @@ ApplicationWindow {
                         anchors.centerIn: parent
 
                         onEditConfirmed: editedText => {
-                            globalKeyHandler.forceActiveFocus()
-                            if (split.categoryName === editedText) return
-                            console.log("Category name edit: " + split.gameName + " -> " + editedText)
-                            split.categoryName = editedText
-
+                            globalKeyHandler.forceActiveFocus();
+                            if (split.categoryName === editedText)
+                                return;
+                            console.log("Category name edit: " + split.gameName + " -> " + editedText);
+                            split.categoryName = editedText;
                         }
                     }
 
@@ -143,11 +141,11 @@ ApplicationWindow {
                         readFontStyle: OpenSans.italic
 
                         onEditConfirmed: editedText => {
-                            globalKeyHandler.forceActiveFocus()
-                            if (split.attemptCount === editedText) return
-                            console.log("Category name edit: " + split.attemptCount + " -> " + editedText)
-                            split.attemptCount = parseInt(editedText)
-
+                            globalKeyHandler.forceActiveFocus();
+                            if (split.attemptCount === editedText)
+                                return;
+                            console.log("Category name edit: " + split.attemptCount + " -> " + editedText);
+                            split.attemptCount = parseInt(editedText);
                         }
                     }
                 }
@@ -161,17 +159,14 @@ ApplicationWindow {
                 Layout.fillWidth: true
             }
 
-
             RowLayout {
-                property string name: "HERE1"
                 id: qmlTimer
+                property string name: "HERE1"
                 width: parent.width
 
                 Layout.alignment: Qt.AlignBottom
                 Layout.maximumHeight: 75
                 Layout.minimumHeight: 75
-
-
 
                 Label {
                     id: _runTimer
@@ -186,8 +181,8 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    color: "#ffffff"
                 }
-
             }
 
             SplitRow {
@@ -200,14 +195,12 @@ ApplicationWindow {
             }
         }
 
-        // background: Rectangle {
-        //     color: "#1e1e1e"
-        // }
-
+        background: Rectangle {
+            color: "#1e1e1e"
+        }
     }
 
     onClosing: {
-        Qt.quit()
+        Qt.quit();
     }
-
 }
