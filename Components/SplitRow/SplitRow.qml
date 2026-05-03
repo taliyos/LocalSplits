@@ -164,7 +164,7 @@ MouseArea {
     }
 
     function finishEdit() {
-        console.log("finish edit")
+        // console.log("finish edit")
         setInactive()
     }
 
@@ -207,23 +207,23 @@ MouseArea {
 
                 // Confirm edit for name
                 onEditConfirmed: editedText => {
-                    console.log("name edit confirmed")
+                    // console.log("name edit confirmed")
                     split.nameEditConfirmed(editedText)
                 }
 
                 onEditFinished: {
-                    console.log("name edit finished")
+                    // console.log("name edit finished")
                     split.setInactive()
                 }
 
                 onEditCancelled: {
-                    console.log("name edit cancelled")
+                    // console.log("name edit cancelled")
                     split.setInactive()
                 }
 
                 // Tab from name -> time
                 onItemTabbed: {
-                    console.log("name edit tab out")
+                    // console.log("name edit tab out")
                     splitTime.startEdit()
                 }
             }
@@ -246,23 +246,23 @@ MouseArea {
 
                 // Confirm edit for time
                 onEditConfirmed: editedText => {
-                    console.log("time edit confirmed")
+                    // console.log("time edit confirmed")
                     split.timeEditConfirmed(editedText)
                 }
 
                 onEditFinished: {
-                    console.log("time edit finished")
+                    // console.log("time edit finished")
                     split.setInactive()
                 }
 
                 onEditCancelled: {
-                    console.log("time edit cancelled")
+                    // console.log("time edit cancelled")
                     split.setInactive()
                 }
 
                 // Tab from time -> next row
                 onItemTabbed: {
-                    console.log("time edit tab out")
+                    // console.log("time edit tab out")
                     tabToNextRow()
                 }
             }

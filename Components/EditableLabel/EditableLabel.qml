@@ -91,7 +91,7 @@ MouseArea {
 
         onEditingFinished: {
             parent.focus = false
-            console.log("editing finished for " + parent.text)
+            // console.log("editing finished for " + parent.text)
             parent.editConfirmed(text)
         }
 

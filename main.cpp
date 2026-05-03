@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
     HotkeyManager hotkeys(&app);
 
-    QObject::connect(&hotkeys, &HotkeyManager::pausePressed, split->getTimer(), &Timer::onPauseButtonPress);
+    QObject::connect(&hotkeys, &HotkeyManager::pausePressed, split, &Split::onPauseButtonPress);
     QObject::connect(&hotkeys, &HotkeyManager::splitPressed, split, &Split::onSplitButtonPress);
     QObject::connect(&hotkeys, &HotkeyManager::resetPressed, split, &Split::onResetButtonPress);
 

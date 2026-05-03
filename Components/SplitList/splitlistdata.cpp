@@ -66,7 +66,6 @@ void SplitListData::clear() {
 }
 
 void SplitListData::setTimeatSplitIndex(const QString& time, int index){
-
     m_items[index]->time = time;
     emit splitChanged(index);
 }

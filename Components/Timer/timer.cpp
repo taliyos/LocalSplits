@@ -37,10 +37,18 @@ QString Timer::getTime() {
 
     QList<qint64> timeArray = {hours, minutes, seconds, miliseconds};
 
+    bool hasHigherUnits = (hours > 0 || minutes > 0);
+
     QString readableTime = formatTime(timeArray, 0, QString(""))
-        + formatTime(timeArray, 1, QString(":"))
-        + formatTime(timeArray, 2, QString(":"))
-        + formatTime(timeArray, 3, QString("."));
+                           + formatTime(timeArray, 1, QString(":"));
+
+    if (hasHigherUnits){
+        readableTime += QString(":") + (seconds < 10 ? "0" : "") + QString::number(seconds);
+    } else {
+        readableTime += QString::number(seconds);
+    }
+
+    readableTime += QString(".") + (miliseconds < 10 ? "0" : "") + QString::number(miliseconds);
 
     return readableTime;
 }

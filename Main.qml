@@ -170,8 +170,12 @@ ApplicationWindow {
 
                 Label {
                     id: _runTimer
+                    color: split.run_ended ? "green" : "white"
 
-                    text: split.getTimer().time
+                    text: {
+                        var t = split.getTimer().time;
+                        return t.slice(0, -2) + "<span style='font-size:16pt; font-weight:800'>" + t.slice(-2) + "</span>"
+                    }
                     font.pointSize: 28
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -181,7 +185,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    color: "#ffffff"
+
                 }
             }
 

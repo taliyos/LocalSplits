@@ -32,19 +32,46 @@ Timer* Split::getTimer() {
 }
 
 void Split::onSplitButtonPress(){
-
-    if (m_data->items().size() <= m_splitrow){
-        qDebug() << "NO more splits";
+    if(m_data->items().size() == 0){
+        if(!m_run_ended){
+            m_timer->onPauseButtonPress();
+            m_run_ended = true;
+            emit runEndedChanged();
+        }
+    }
+    if(!m_run_started){
+        m_run_started = true;
+        m_timer->onPauseButtonPress();
         return;
     }
-    m_data->setTimeatSplitIndex(m_timer->getTime(), m_splitrow);
+    if(m_run_ended){
+        qDebug() <<"Can't Split Run ended";
+        qDebug() << m_splitrow;
+        return;
+    }
 
+    if (m_data->items().size() <= (m_splitrow+1) && !m_run_ended){
+        qDebug() << "Run Ended";
+        m_run_ended = true;
+        m_timer->onPauseButtonPress();
+        emit runEndedChanged();
+    }
+    m_data->setTimeatSplitIndex(m_timer->getTime(), m_splitrow);
     m_splitrow++;
+}
+
+void Split::onPauseButtonPress(){
+    if(m_run_ended){
+        return;
+    }else{
+        m_timer->onPauseButtonPress();
+    }
 }
 
 void Split::onResetButtonPress(){
     m_timer->reset();
     m_splitrow = 0;
+    m_run_ended = false;
     for(int i = 0; i < (m_data->items().count()); ++i){
         m_data->setTimeatSplitIndex(0, i);
     }
@@ -146,4 +173,9 @@ int Split::getAttemptCount() const {
 void Split::setAttemptCount(const int &attemptCount) {
     m_layout->attemptCount = attemptCount;
     emit attemptCountChanged();
+}
+
+bool Split::getRunEnded() const
+{
+    return m_run_ended;
 }
