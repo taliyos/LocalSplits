@@ -56,7 +56,7 @@ void Split::onSplitButtonPress(){
         m_timer->onPauseButtonPress();
         emit runEndedChanged();
     }
-    m_data->setTimeatSplitIndex(m_timer->getTime(), m_splitrow);
+    m_data->setTimeAtSplitIndex(m_timer->getTime(), m_splitrow);
     m_splitrow++;
 }
 
@@ -73,7 +73,7 @@ void Split::onResetButtonPress(){
     m_splitrow = 0;
     m_run_ended = false;
     for(int i = 0; i < (m_data->items().count()); ++i){
-        m_data->setTimeatSplitIndex(0, i);
+        m_data->setTimeAtSplitIndex(0, i);
     }
 }
 
