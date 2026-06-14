@@ -1,4 +1,4 @@
-
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
@@ -17,6 +17,9 @@
 
 int main(int argc, char *argv[])
     {
+
+    qDebug() << "App starting";
+
         QCoreApplication::setApplicationName("LocalSplits");
         QCoreApplication::setApplicationVersion("0.1");
 
@@ -24,6 +27,8 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<SplitModel>("com.localsplits", 1, 0, "SplitModel");
     qmlRegisterUncreatableType<SplitListData>("com.localsplits", 1, 0, "SplitListData", QStringLiteral("SplitListData should not be created in QML"));
+    qmlRegisterUncreatableType<Split>("com.localsplits", 1, 0, "Split", QStringLiteral("Split should not be created in QML"));
+    qmlRegisterUncreatableType<RunnerModel>("com.localsplits", 1, 0, "RunnerModel", "Not creatable");
 
     Split* split = new Split();
 

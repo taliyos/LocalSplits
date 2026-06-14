@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
@@ -13,27 +12,10 @@ import com.localsplits
 
 ApplicationWindow {
     id: window
-    width: 300
-    height: 480
+    width: 450
+    height: 600
     visible: true
     title: qsTr("LocalSplits")
-
-    FocusScope {
-        id: globalKeyHandler
-        focus: true   // Steal focus at launch
-        visible: false
-
-        Keys.onPressed: event => {
-            if (event.key === Qt.Key_Space) {
-                split.getTimer().onPauseButtonClick();
-                event.accepted = true;
-            }
-            if (event.key === Qt.Key_0) {
-                split.onSplitButtonPress();
-                event.accepted = true;
-            }
-        }
-    }
 
     menuBar: SplitsMenuBar {
         onNewFile: {
@@ -50,10 +32,8 @@ ApplicationWindow {
 
         acceptLabel: "Open Splits"
         fileMode: FileDialog.OpenFile
-        nameFilters: ["LocalSplits (*.localsplits)", "LiveSplit (*.lss)"]
+        nameFilters: ["LiveSplit (*.lss)", "LocalSplits (*.localsplits)"]
         onAccepted: {
-            console.log("file opened");
-            //console.log(split.getName())
             split.openFile(selectedFile);
             split.name = "Test123";
         }
@@ -64,9 +44,57 @@ ApplicationWindow {
         anchors.fill: parent
         padding: 4
 
+        background: Rectangle {
+            color: "#1e1e1e"
+        }
+
         ColumnLayout {
             width: parent.width
             height: parent.height
+
+            RowLayout{
+                Layout.fillWidth: true
+                Layout.maximumHeight: 20
+
+                EditableLabel {
+                    id: usernameLabel
+                    text: split.username
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    pointSize: 8
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+
+                    onEditConfirmed: editedText => {
+                        // globalKeyHandler.forceActiveFocus()
+                        if (split.username === editedText) return
+                        split.username = editedText
+                    }
+                }
+
+                Rectangle{
+                    id: connectionDot
+                    visible: split.gameMode === Split.MultiPlayer
+                    width:10
+                    height: 10
+                    radius: 5
+                    color: {
+                            if (split.gameMode !== Split.MultiPlayer) return "transparent"
+                            if (split.getRaceManager() === null) return "red"
+                            return split.getRaceManager().connected ? "green" : "red"
+                        }
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                Label{
+                    text: split.gameMode === Split.MultiPlayer ? "MultiPlayer" : "SinglePlayer"
+                    color: "white"
+                    font.pointSize: 8
+                    Layout.alignment: Qt.AlignVCenter
+                }
+            }
+
 
             ColumnLayout {
                 id: title
@@ -90,22 +118,19 @@ ApplicationWindow {
 
                     onEditConfirmed: editedText => {
                         globalKeyHandler.forceActiveFocus();
-                        if (split.gameName === editedText)
-                            return;
-                        console.log("Game name edit: " + split.gameName + " -> " + editedText);
+                        if (split.gameName === editedText) return;
+                        // console.log("Game name edit: " + split.gameName + " -> " + editedText);
                         split.gameName = editedText;
                     }
                 }
 
                 RowLayout {
                     Layout.fillWidth: true
-                    //Layout.minimumHeight: childrenRect.height
                     height: runCategory.height
 
                     EditableLabel {
                         id: runCategory
                         text: split.categoryName
-                        Layout.alignment: Qt.AlignHCenter
                         Layout.fillWidth: true
                         Layout.minimumHeight: getChildHeight()
 
@@ -114,13 +139,13 @@ ApplicationWindow {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
 
-                        anchors.centerIn: parent
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                         onEditConfirmed: editedText => {
                             globalKeyHandler.forceActiveFocus();
                             if (split.categoryName === editedText)
                                 return;
-                            console.log("Category name edit: " + split.gameName + " -> " + editedText);
+                            // console.log("Category name edit: " + split.gameName + " -> " + editedText);
                             split.categoryName = editedText;
                         }
                     }
@@ -128,7 +153,6 @@ ApplicationWindow {
                     EditableLabel {
                         id: attemptCount
                         text: split.attemptCount
-                        Layout.alignment: Qt.AlignHCenter
                         Layout.minimumWidth: getChildWidth()
                         Layout.minimumHeight: getChildHeight()
 
@@ -137,7 +161,7 @@ ApplicationWindow {
                         horizontalAlignment: Text.AlignRight
                         verticalAlignment: Text.AlignVCenter
 
-                        anchors.right: parent.right
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         readFontStyle: OpenSans.italic
 
                         onEditConfirmed: editedText => {
@@ -153,17 +177,13 @@ ApplicationWindow {
 
             SplitList {
                 id: allSplits
-
-                width: parent.width
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
 
             RowLayout {
                 id: qmlTimer
-                property string name: "HERE1"
                 width: parent.width
-
                 Layout.alignment: Qt.AlignBottom
                 Layout.maximumHeight: 75
                 Layout.minimumHeight: 75
@@ -171,7 +191,6 @@ ApplicationWindow {
                 Label {
                     id: _runTimer
                     color: split.run_ended ? "green" : "white"
-
                     text: {
                         var t = split.getTimer().time;
                         return t.slice(0, -2) + "<span style='font-size:16pt; font-weight:800'>" + t.slice(-2) + "</span>"
@@ -185,7 +204,15 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-
+                }
+                Button {
+                    onClicked: split.onPauseButtonPress()
+                }
+                Button {
+                    onClicked: split.onSplitButtonPress()
+                }
+                Button {
+                    onClicked: split.onResetButtonPress()
                 }
             }
 
@@ -199,9 +226,7 @@ ApplicationWindow {
             }
         }
 
-        background: Rectangle {
-            color: "#1e1e1e"
-        }
+
     }
 
     onClosing: {

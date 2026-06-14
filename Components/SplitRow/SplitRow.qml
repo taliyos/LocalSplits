@@ -24,6 +24,8 @@ MouseArea {
 
     property bool active: false
 
+    property var runnerTimes: []
+
     signal nameEditConfirmed(string editedText)
     signal timeEditConfirmed(string editedText)
     signal tabToNextRow()
@@ -58,7 +60,7 @@ MouseArea {
         topInset: 0
         bottomInset: 0
 
-        popupType: Popup.Item
+        // popupType: Popup.Item
 
         MenuItem {
             onClicked: split.startEdit()
@@ -188,6 +190,20 @@ MouseArea {
 
             width: parent.width
             height: parent.height
+
+            Repeater {
+                model: split.runnerTimes
+                delegate: Label {
+                    text: modelData.time
+                    color: split.currentTextColor
+                    Layout.minimumWidth: 60
+                    Layout.rightMargin: 4
+                    horizontalAlignment: Text.AlignRight
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 10
+                    font.family: OpenSans.family
+                }
+            }
 
             // Split Name
             EditableLabel {

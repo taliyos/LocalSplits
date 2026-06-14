@@ -79,6 +79,8 @@ qt_add_qml_module(appLocalSplits
         Components/SplitsMenuBar/SplitsMenuItem.qml
         Components/SplitsMenuBar/SplitsMenu.qml
         Components/AboutPopup/AboutPopup.qml
+        SOURCES racemanager.h racemanager.cpp
+        SOURCES Components/RunnerModel/RunnerModel.h Components/RunnerModel/RunnerModel.cpp
 
 )
 
@@ -93,13 +95,18 @@ set_target_properties(appLocalSplits PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick WebSockets)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+
 target_link_libraries(appLocalSplits
     PRIVATE Qt6::Quick
     PRIVATE Qt6::Core
     PRIVATE Qt6::Qml
     PRIVATE QHotkey::QHotkey
+    PRIVATE Qt6::WebSockets
     qhotkey
 )
+target_link_libraries(appLocalSplits PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)
 install(TARGETS appLocalSplits

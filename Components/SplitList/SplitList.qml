@@ -7,13 +7,42 @@ import "../Fonts"
 import "../SplitFooterButton"
 
 ColumnLayout {
-    property alias splitHeight: splitsList.height
-
     id: splitListLayout
+    spacing: 0
+
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.minimumHeight: 20
+        Layout.maximumHeight: 20
+        visible: split.gameMode === Split.MultiPlayer
+        spacing: 1
+
+        Item {
+            Layout.preferredWidth: splitListLayout.width * 0.4
+            Layout.preferredHeight: 20
+        }
+
+        Repeater {
+            model: split.getRunnerModel()
+            delegate: Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 20
+                color: "#2b2b2b"
+
+                Text {
+                    anchors.fill: parent
+                    text: model.name
+                    color: "white"
+                    font.pointSize: 8
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+        }
+    }
 
     ListView {
         clip: true
-
         id: splitsList
         Layout.fillWidth: true
         Layout.fillHeight: true
@@ -26,7 +55,6 @@ ColumnLayout {
         highlightMoveDuration: 50
 
         property int addedIndex: -1
-
         spacing: 1
 
         remove: Transition {
@@ -34,10 +62,8 @@ ColumnLayout {
                 properties: "x"
                 to: -width
                 duration: 80
-                easing.type: Easing.OutSine
-            }
+                easing.type: Easing.OutSine }
         }
-
         removeDisplaced: Transition {
             SequentialAnimation {
                 PauseAnimation {
@@ -50,7 +76,6 @@ ColumnLayout {
                 }
             }
         }
-
         add: Transition {
             NumberAnimation {
                 properties: "x"
@@ -59,7 +84,6 @@ ColumnLayout {
                 easing.type: Easing.OutSine
             }
         }
-
         addDisplaced: Transition {
             NumberAnimation {
                 properties: "y"
@@ -68,13 +92,11 @@ ColumnLayout {
             }
         }
 
-        // New items are brought into view and edited upon creation.
         onCountChanged: {
             if (addedIndex === -1) return
             currentIndex = addedIndex
             splitsList.itemAtIndex(addedIndex).startEdit()
             addedIndex = -1
-            console.log("\n")
         }
 
         model: SplitModel {
@@ -82,88 +104,125 @@ ColumnLayout {
             splits: splitList
         }
 
-        delegate: SplitRow {
+        delegate: Item {
+            id: delegateRoot
             width: splitsList.width
+            height: 30
+            property int splitIndex: index
 
-            name: model.name
-            time: model.time
+            SplitRow {
+                id: splitRowItem
+                visible: split.gameMode === Split.SinglePlayer
+                width: delegateRoot.width
+                height: delegateRoot.height
 
-            splitColor: index % 2 === 0 ? "#2b2b2b" : "#00000000"
-            textColor: "#ffffff"
+                name: model.name
+                time: model.time
+                splitColor: splitIndex % 2 === 0 ? "#2b2b2b" : "#00000000"
+                textColor: "#ffffff"
+                highlightBackgroundColor: "#ffffff"
+                highlightTextColor: "#000000"
+                hoverBackgroundColor: "#3d3d3d"
+                hoverTextColor: "#ffffff"
 
-            highlightBackgroundColor: "#ffffff"
-            highlightTextColor: "#000000"
-
-            hoverBackgroundColor: "#3d3d3d"
-            hoverTextColor: "#ffffff"
-
-            function deactivateCurrentRow() {
-                if (splitsList.currentItem != null && splitsList.currentItem != this) {
-                    splitsList.currentItem.setInactive()
+                function deactivateCurrentRow() {
+                    if (splitsList.currentItem != null && splitsList.currentItem !== splitRowItem)
+                        splitsList.currentItem.setInactive()
                 }
-            }
 
-            ListView.onAdd: {
-                for (let i = index + 1; i < splitsList.count; i++) {
-                    if (splitsList.itemAtIndex(i) == null) continue;
-                    splitsList.itemAtIndex(i).setInactive()
+                ListView.onAdd: {
+                    for (let i = splitIndex + 1; i < splitsList.count; i++) {
+                        if (splitsList.itemAtIndex(i) === null) continue
+                        splitsList.itemAtIndex(i).setInactive()
+                    }
                 }
-            }
-
-            ListView.onRemove: {
-                for (let i = index; i < splitsList.count; i++) {
-                    if (splitsList.itemAtIndex(i) == null) continue;
-                    splitsList.itemAtIndex(i).setInactive()
+                ListView.onRemove: {
+                    for (let i = splitIndex; i < splitsList.count; i++) {
+                        if (splitsList.itemAtIndex(i) === null) continue
+                        splitsList.itemAtIndex(i).setInactive()
+                    }
                 }
+
+                onNameEditConfirmed: editedText => {
+                    if (model.name === editedText) return
+                    model.name = editedText
+                    name = editedText
+                    globalKeyHandler.forceActiveFocus()
+                }
+                onTimeEditConfirmed: editedText => {
+                    if (model.time === editedText) return
+                    model.time = editedText
+                    time = editedText
+                    globalKeyHandler.forceActiveFocus()
+                }
+                onTabToNextRow: {
+                    let idx = splitIndex + 1
+                    if (idx >= splitsList.count) idx = 0
+                    finishEdit()
+                    splitsList.currentIndex = idx
+                    splitsList.itemAtIndex(idx).startEdit()
+                }
+                onActivateRow: deactivateCurrentRow()
+                onDuplicate: {
+                    splitsList.addedIndex = splitIndex + 1
+                    splitList.addItem(model.name, model.time, splitIndex + 1)
+                }
+                onRemove: splitList.removeItem(splitIndex)
             }
 
-            onNameEditConfirmed: editedText => {
-                if (model.name === editedText) return
-                console.log("Name edit: " + model.name + " -> " + editedText)
-                model.name = editedText
-                name = editedText
-                globalKeyHandler.forceActiveFocus()
-            }
+            RowLayout {
+                visible: split.gameMode === Split.MultiPlayer
+                width: delegateRoot.width
+                height: delegateRoot.height
+                spacing: 1
 
-            onTimeEditConfirmed: editedText => {
-                if (model.time === editedText) return
-                console.log("Time edit: " + model.time + " -> " + editedText)
-                model.time = editedText
-                time = editedText
-                globalKeyHandler.forceActiveFocus()
-            }
+                Rectangle {
+                    Layout.preferredWidth: delegateRoot.width * 0.4
+                    Layout.fillHeight: true
+                    color: splitIndex % 2 === 0 ? "#2b2b2b" : "#00000000"
 
-            onTabToNextRow: {
-                let idx = index + 1
-                if (idx >= splitsList.count) idx = 0
-                finishEdit()
-                splitsList.currentIndex = idx
-                splitsList.itemAtIndex(idx).startEdit()
-            }
+                    Text {
+                        anchors.fill: parent
+                        anchors.leftMargin: 4
+                        text: model.name
+                        color: "white"
+                        font.pointSize: 10
+                        font.family: OpenSans.family
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
 
-            onActivateRow: {
-                deactivateCurrentRow()
-            }
+                Repeater {
+                    model: split.getRunnerModel()
+                    delegate: Rectangle {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: splitIndex % 2 === 0 ? "#2b2b2b" : "#00000000"
 
-            onDuplicate: {
-                splitsList.addedIndex = index + 1
-                console.log(splitsList.addedIndex)
-                splitList.addItem(model.name, model.time, index + 1)
-            }
-
-            onRemove: {
-                splitList.removeItem(index)
+                        Text {
+                            anchors.fill: parent
+                            anchors.rightMargin: 4
+                            text: {
+                                var s = model.splits
+                                return (s && splitIndex < s.length) ? s[splitIndex] : "--"
+                            }
+                            color: "white"
+                            font.pointSize: 10
+                            font.family: OpenSans.family
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
             }
         }
 
         footer: Rectangle {
+            visible: split.gameMode === Split.SinglePlayer
             color: "#2b2b2b"
-
             width: 50
             height: 25
-            bottomRightRadius: 2
-            bottomLeftRadius: 2
-
+            radius: 2
             anchors.right: parent.right
 
             RowLayout {
@@ -173,19 +232,13 @@ ColumnLayout {
                 SplitFooterButton {
                     contentText: "+"
                     layoutWidth: parent.width / 2
-
                     backgroundNormalColor: "transparent"
                     backgroundHoverColor: "#3d3d3d"
                     backgroundPressedColor: "#ffffff"
                     textNormalColor: "#ffffff"
                     textHoverColor: "#ffffff"
                     textPressedColor: "#000000"
-
-                    bottomLeftRadius: 2
-                    bottomRightRadius: 0
-                    topRightRadius: 0
-                    topLeftRadius: 0
-
+                    radius: 2
                     onClicked: {
                         splitsList.addedIndex = splitsList.count
                         splitList.addItem()
@@ -195,22 +248,14 @@ ColumnLayout {
                 SplitFooterButton {
                     contentText: "-"
                     layoutWidth: 25
-
                     backgroundNormalColor: "transparent"
                     backgroundHoverColor: "#3d3d3d"
                     backgroundPressedColor: "#ffffff"
                     textNormalColor: "#ffffff"
                     textHoverColor: "#ffffff"
                     textPressedColor: "#000000"
-
-                    bottomLeftRadius: 0
-                    bottomRightRadius: 2
-                    topRightRadius: 0
-                    topLeftRadius: 0
-
-                    onClicked: {
-                        splitList.removeItem(splitsList.count - 1)
-                    }
+                    radius: 2
+                    onClicked: splitList.removeItem(splitsList.count - 1)
                 }
             }
         }

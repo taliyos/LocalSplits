@@ -14,10 +14,7 @@ Button {
     property color textHoverColor: "#ffffff"
     property color textPressedColor: "#000000"
 
-    property alias bottomRightRadius: bg.bottomRightRadius
-    property alias bottomLeftRadius: bg.bottomLeftRadius
-    property alias topLeftRadius: bg.topLeftRadius
-    property alias topRightRadius: bg.topRightRadius
+    property alias radius: bg.radius
 
     Layout.preferredWidth: layoutWidth
     Layout.fillHeight: true
