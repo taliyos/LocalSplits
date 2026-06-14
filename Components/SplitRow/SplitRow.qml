@@ -164,7 +164,6 @@ MouseArea {
     }
 
     function finishEdit() {
-        // console.log("finish edit")
         setInactive()
     }
 
