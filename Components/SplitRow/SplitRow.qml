@@ -24,6 +24,8 @@ MouseArea {
 
     property bool active: false
 
+    property var runnerTimes: []
+
     signal nameEditConfirmed(string editedText)
     signal timeEditConfirmed(string editedText)
     signal tabToNextRow()
@@ -58,7 +60,7 @@ MouseArea {
         topInset: 0
         bottomInset: 0
 
-        popupType: Popup.Item
+        // popupType: Popup.Item
 
         MenuItem {
             onClicked: split.startEdit()
@@ -164,7 +166,7 @@ MouseArea {
     }
 
     function finishEdit() {
-        console.log("finish edit")
+        // console.log("finish edit")
         setInactive()
     }
 
@@ -189,6 +191,20 @@ MouseArea {
             width: parent.width
             height: parent.height
 
+            Repeater {
+                model: split.runnerTimes
+                delegate: Label {
+                    text: modelData.time
+                    color: split.currentTextColor
+                    Layout.minimumWidth: 60
+                    Layout.rightMargin: 4
+                    horizontalAlignment: Text.AlignRight
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 10
+                    font.family: OpenSans.family
+                }
+            }
+
             // Split Name
             EditableLabel {
                 id: splitName
@@ -207,23 +223,23 @@ MouseArea {
 
                 // Confirm edit for name
                 onEditConfirmed: editedText => {
-                    console.log("name edit confirmed")
+                    // console.log("name edit confirmed")
                     split.nameEditConfirmed(editedText)
                 }
 
                 onEditFinished: {
-                    console.log("name edit finished")
+                    // console.log("name edit finished")
                     split.setInactive()
                 }
 
                 onEditCancelled: {
-                    console.log("name edit cancelled")
+                    // console.log("name edit cancelled")
                     split.setInactive()
                 }
 
                 // Tab from name -> time
                 onItemTabbed: {
-                    console.log("name edit tab out")
+                    // console.log("name edit tab out")
                     splitTime.startEdit()
                 }
             }
@@ -246,23 +262,23 @@ MouseArea {
 
                 // Confirm edit for time
                 onEditConfirmed: editedText => {
-                    console.log("time edit confirmed")
+                    // console.log("time edit confirmed")
                     split.timeEditConfirmed(editedText)
                 }
 
                 onEditFinished: {
-                    console.log("time edit finished")
+                    // console.log("time edit finished")
                     split.setInactive()
                 }
 
                 onEditCancelled: {
-                    console.log("time edit cancelled")
+                    // console.log("time edit cancelled")
                     split.setInactive()
                 }
 
                 // Tab from time -> next row
                 onItemTabbed: {
-                    console.log("time edit tab out")
+                    // console.log("time edit tab out")
                     tabToNextRow()
                 }
             }

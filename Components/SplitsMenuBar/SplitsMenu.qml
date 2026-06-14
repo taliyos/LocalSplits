@@ -6,7 +6,7 @@ import QtQuick.Controls.Basic
 
 Menu {
     background: Rectangle {
-        implicitWidth: 100
+        implicitWidth: 180
         color: "#1e1e1e"
         border.color: "#3c3c3c"
         radius: 2
