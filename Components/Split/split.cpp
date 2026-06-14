@@ -175,7 +175,7 @@ void Split::setAttemptCount(const int &attemptCount) {
     emit attemptCountChanged();
 }
 
-bool Split::getRunEnded() const
+bool Split::isRunEnded() const
 {
     return m_run_ended;
 }
