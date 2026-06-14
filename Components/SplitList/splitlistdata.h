@@ -35,7 +35,7 @@ public slots:
     void removeItem(int index);
     void clear();
 
-    void setTimeatSplitIndex(const QString& time, int index);
+    void setTimeAtSplitIndex(const QString& time, int index);
 
 private:
     QVector<SplitItem*> m_items;
