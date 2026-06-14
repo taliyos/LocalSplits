@@ -18,7 +18,7 @@ class Split : public QObject {
     Q_PROPERTY(SplitPlatform platform READ getPlatform WRITE setPlatform NOTIFY platformChanged)
     Q_PROPERTY(QString region READ getRegion WRITE setRegion NOTIFY regionChanged)
     Q_PROPERTY(int attemptCount READ getAttemptCount WRITE setAttemptCount NOTIFY attemptCountChanged)
-    Q_PROPERTY(bool run_ended READ getRunEnded NOTIFY runEndedChanged)
+    Q_PROPERTY(bool run_ended READ isRunEnded NOTIFY runEndedChanged)
 
 
 public:
@@ -46,7 +46,7 @@ public:
     int getAttemptCount() const;
     void setAttemptCount(const int& attemptCount);
 
-    bool getRunEnded() const;
+    bool isRunEnded() const;
 
 
 signals:
