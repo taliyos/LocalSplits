@@ -122,6 +122,7 @@ ColumnLayout {
                 console.log("Name edit: " + model.name + " -> " + editedText)
                 model.name = editedText
                 name = editedText
+                globalKeyHandler.forceActiveFocus()
             }
 
             onTimeEditConfirmed: editedText => {
@@ -129,6 +130,7 @@ ColumnLayout {
                 console.log("Time edit: " + model.time + " -> " + editedText)
                 model.time = editedText
                 time = editedText
+                globalKeyHandler.forceActiveFocus()
             }
 
             onTabToNextRow: {

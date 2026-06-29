@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "Components/SplitLayoutParsing/splitplatform.h"
+#include "Components/Timer/timer.h"
 
 
 class SplitListData;
@@ -17,6 +18,8 @@ class Split : public QObject {
     Q_PROPERTY(SplitPlatform platform READ getPlatform WRITE setPlatform NOTIFY platformChanged)
     Q_PROPERTY(QString region READ getRegion WRITE setRegion NOTIFY regionChanged)
     Q_PROPERTY(int attemptCount READ getAttemptCount WRITE setAttemptCount NOTIFY attemptCountChanged)
+    Q_PROPERTY(bool run_ended READ isRunEnded NOTIFY runEndedChanged)
+
 
 public:
     explicit Split(QObject* parent = nullptr);
@@ -43,6 +46,9 @@ public:
     int getAttemptCount() const;
     void setAttemptCount(const int& attemptCount);
 
+    bool isRunEnded() const;
+
+
 signals:
     void layoutChanged();
     void gameNameChanged();
@@ -51,15 +57,23 @@ signals:
     void platformChanged();
     void regionChanged();
     void attemptCountChanged();
-
+    void runEndedChanged();
 
 public slots:
     void openFile(const QString& fileLocation);
     void newFile();
+    void onResetButtonPress();
+    void onSplitButtonPress();
+    void onPauseButtonPress();
+    Timer* getTimer();
 
 private:
     SplitLayout* m_layout;
     SplitListData* m_data;
+    Timer* m_timer;
+    int m_splitrow = 0;
+    bool m_run_ended = false;
+    bool m_run_started = false;
 };
 
 

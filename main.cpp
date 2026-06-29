@@ -1,19 +1,24 @@
+
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
 #include <QDir>
 #include <QQmlEngine>
 #include <QQuickView>
+#include <QStyleHints>
 
 #include "Components/Split/split.h"
 #include "Components/Split/splitmodel.h"
 #include "Components/SplitLayoutParsing/layoutparser.h"
 #include "Components/SplitList/splitlistdata.h"
 
+#include "Components/Timer/hotkeymanager.h"
+
+
 int main(int argc, char *argv[])
-{
-    QCoreApplication::setApplicationName("LocalSplits");
-    QCoreApplication::setApplicationVersion("0.1");
+    {
+        QCoreApplication::setApplicationName("LocalSplits");
+        QCoreApplication::setApplicationVersion("0.1");
 
     QGuiApplication app(argc, argv);
 
@@ -21,7 +26,12 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<SplitListData>("com.localsplits", 1, 0, "SplitListData", QStringLiteral("SplitListData should not be created in QML"));
 
     Split* split = new Split();
-    //split->openFile("tests\\testLayout.lss");
+
+    HotkeyManager hotkeys(&app);
+
+    QObject::connect(&hotkeys, &HotkeyManager::pausePressed, split, &Split::onPauseButtonPress);
+    QObject::connect(&hotkeys, &HotkeyManager::splitPressed, split, &Split::onSplitButtonPress);
+    QObject::connect(&hotkeys, &HotkeyManager::resetPressed, split, &Split::onResetButtonPress);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("split"), split);

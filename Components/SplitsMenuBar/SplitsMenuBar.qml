@@ -20,27 +20,37 @@ MenuBar {
         title: qsTr("File")
         SplitsMenuItem {
             text: qsTr("&New")
-            onTriggered: { newFile() }
+            onTriggered: {
+                newFile();
+            }
         }
         SplitsMenuItem {
             text: qsTr("&Open")
-            onTriggered: { open() }
+            onTriggered: {
+                open();
+            }
         }
         SplitsMenuItem {
             text: qsTr("&Save")
-            onTriggered: { save() }
+            onTriggered: {
+                save();
+            }
         }
         SplitsMenuItem {
             text: qsTr("Save &As")
-            onTriggered: { saveAs() }
+            onTriggered: {
+                saveAs();
+            }
         }
-        MenuSeparator { }
-        SplitsMenuItem { text: qsTr("&Preferences") }
-        MenuSeparator { }
+        MenuSeparator {}
+        SplitsMenuItem {
+            text: qsTr("&Preferences")
+        }
+        MenuSeparator {}
         SplitsMenuItem {
             text: qsTr("&Quit")
             onTriggered: {
-                Qt.quit()
+                Qt.quit();
             }
         }
     }
@@ -49,9 +59,9 @@ MenuBar {
         SplitsMenuItem {
             text: qsTr("&About")
             onTriggered: {
-                let component = Qt.createComponent("../AboutPopup/AboutPopup.qml")
-                let window = component.createObject()
-                window.show()
+                let component = Qt.createComponent("../AboutPopup/AboutPopup.qml");
+                let window = component.createObject();
+                window.show();
             }
         }
     }

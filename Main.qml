@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Dialogs
+
 import "Components/Fonts"
 import "Components/SplitList"
 import "Components/SplitRow"
@@ -17,13 +18,30 @@ ApplicationWindow {
     visible: true
     title: qsTr("LocalSplits")
 
+    FocusScope {
+        id: globalKeyHandler
+        focus: true   // Steal focus at launch
+        visible: false
+
+        Keys.onPressed: event => {
+            if (event.key === Qt.Key_Space) {
+                split.getTimer().onPauseButtonClick();
+                event.accepted = true;
+            }
+            if (event.key === Qt.Key_0) {
+                split.onSplitButtonPress();
+                event.accepted = true;
+            }
+        }
+    }
+
     menuBar: SplitsMenuBar {
         onNewFile: {
-            split.newFile()
+            split.newFile();
         }
 
         onOpen: {
-            openFileDialog.open()
+            openFileDialog.open();
         }
     }
 
@@ -33,12 +51,11 @@ ApplicationWindow {
         acceptLabel: "Open Splits"
         fileMode: FileDialog.OpenFile
         nameFilters: ["LocalSplits (*.localsplits)", "LiveSplit (*.lss)"]
-
         onAccepted: {
-            console.log("file opened")
+            console.log("file opened");
             //console.log(split.getName())
-            split.openFile(selectedFile)
-            split.name = "Test123"
+            split.openFile(selectedFile);
+            split.name = "Test123";
         }
     }
 
@@ -72,9 +89,11 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
 
                     onEditConfirmed: editedText => {
-                        if (split.gameName === editedText) return
-                        console.log("Game name edit: " + split.gameName + " -> " + editedText)
-                        split.gameName = editedText
+                        globalKeyHandler.forceActiveFocus();
+                        if (split.gameName === editedText)
+                            return;
+                        console.log("Game name edit: " + split.gameName + " -> " + editedText);
+                        split.gameName = editedText;
                     }
                 }
 
@@ -98,9 +117,11 @@ ApplicationWindow {
                         anchors.centerIn: parent
 
                         onEditConfirmed: editedText => {
-                            if (split.categoryName === editedText) return
-                            console.log("Category name edit: " + split.gameName + " -> " + editedText)
-                            split.categoryName = editedText
+                            globalKeyHandler.forceActiveFocus();
+                            if (split.categoryName === editedText)
+                                return;
+                            console.log("Category name edit: " + split.gameName + " -> " + editedText);
+                            split.categoryName = editedText;
                         }
                     }
 
@@ -118,12 +139,13 @@ ApplicationWindow {
 
                         anchors.right: parent.right
                         readFontStyle: OpenSans.italic
-                        //debug: true
 
                         onEditConfirmed: editedText => {
-                            if (split.attemptCount === editedText) return
-                            console.log("Category name edit: " + split.attemptCount + " -> " + editedText)
-                            split.attemptCount = parseInt(editedText)
+                            globalKeyHandler.forceActiveFocus();
+                            if (split.attemptCount === editedText)
+                                return;
+                            console.log("Category name edit: " + split.attemptCount + " -> " + editedText);
+                            split.attemptCount = parseInt(editedText);
                         }
                     }
                 }
@@ -138,7 +160,8 @@ ApplicationWindow {
             }
 
             RowLayout {
-                id: _timer
+                id: qmlTimer
+                property string name: "HERE1"
                 width: parent.width
 
                 Layout.alignment: Qt.AlignBottom
@@ -147,7 +170,12 @@ ApplicationWindow {
 
                 Label {
                     id: _runTimer
-                    text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Open Sans ExtraBold'; font-size:32pt;\">00:00:00</span><span style=\" font-family:'Open Sans ExtraBold'; font-size:24pt;\">.00</span></p></body></html>"
+                    color: split.run_ended ? "green" : "white"
+
+                    text: {
+                        var t = split.getTimer().time;
+                        return t.slice(0, -2) + "<span style='font-size:16pt; font-weight:800'>" + t.slice(-2) + "</span>"
+                    }
                     font.pointSize: 28
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -157,6 +185,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+
                 }
             }
 
@@ -173,11 +202,9 @@ ApplicationWindow {
         background: Rectangle {
             color: "#1e1e1e"
         }
-
     }
 
     onClosing: {
-        Qt.quit()
+        Qt.quit();
     }
-
 }
