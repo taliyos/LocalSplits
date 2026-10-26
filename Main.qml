@@ -73,6 +73,16 @@ ApplicationWindow {
                     }
                 }
 
+                TextEdit{
+                    text: split.raceManager ? split.raceManager.roomId : ""
+                    visible: split.gameMode === Split.MultiPlayer
+                    readOnly: true
+                    selectByMouse: true
+                    color: "white"
+                    font.pointSize: 8
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
                 Rectangle{
                     id: connectionDot
                     visible: split.gameMode === Split.MultiPlayer
@@ -80,9 +90,8 @@ ApplicationWindow {
                     height: 10
                     radius: 5
                     color: {
-                            if (split.gameMode !== Split.MultiPlayer) return "transparent"
-                            if (split.getRaceManager() === null) return "red"
-                            return split.getRaceManager().connected ? "green" : "red"
+                            if (split.raceManager === null) return "red"
+                            return split.raceManager.connected ? "green" : "red"
                         }
                     Layout.alignment: Qt.AlignVCenter
                 }
@@ -93,6 +102,7 @@ ApplicationWindow {
                     font.pointSize: 8
                     Layout.alignment: Qt.AlignVCenter
                 }
+
             }
 
 

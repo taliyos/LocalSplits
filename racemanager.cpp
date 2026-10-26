@@ -34,6 +34,7 @@ void racemanager::joinRoom(const QString& roomId){
         leaveRoom();
     }
     m_roomId = roomId;
+    emit roomIdChanged();
     QString url = QString("%1?roomId=%2").arg(SERVER_URL, roomId);
     m_socket->open(QUrl(url));
     qDebug() << "Connecting to room:" << roomId;
@@ -102,9 +103,8 @@ void racemanager::onConnected(){
 
 void racemanager::onDisconnected(){
     m_connected = false;
-    m_roomId.clear();
-    emit connectedChanged();
     qDebug() << "Disconnected from room:" << m_roomId;
+    emit connectedChanged();
 }
 
 void racemanager::onMessageReceived(const QString& message){

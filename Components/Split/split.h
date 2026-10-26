@@ -34,6 +34,7 @@ public:
     Q_PROPERTY(bool run_ended READ getRunEnded NOTIFY runEndedChanged)
     Q_PROPERTY(GameMode gameMode READ getGameMode WRITE setGameMode NOTIFY gameModeChanged)
     Q_PROPERTY(QString username READ getUsername WRITE setUsername NOTIFY usernameChanged)
+    Q_PROPERTY(racemanager* raceManager READ getRaceManager NOTIFY raceManagerChanged)
 
     explicit Split(QObject* parent = nullptr);
     ~Split() override;
@@ -68,6 +69,8 @@ public:
     QString getUsername() const;
     void setUsername(const QString& username);
 
+    racemanager* getRaceManager() const;
+
 signals:
     void layoutChanged();
     void gameNameChanged();
@@ -80,6 +83,7 @@ signals:
     void gameModeChanged();
     void runnerModelChanged();
     void usernameChanged();
+    void raceManagerChanged();
 
 public slots:
     void openFile(const QString& fileLocation);
@@ -90,7 +94,7 @@ public slots:
     void onRemotePause();
     void onRemoteReset();
     Timer* getTimer() const;
-    racemanager* getRaceManager() const;
+
 
 private:
     SplitLayout* m_layout;

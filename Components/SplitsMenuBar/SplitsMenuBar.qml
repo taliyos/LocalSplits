@@ -62,7 +62,7 @@ MenuBar {
                 text: "Join"
                 DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
                 enabled: roomCodeInput.text.length > 0
-                onClicked: split.getRaceManager().joinRoom(roomCodeInput.text.toUpperCase())
+                onClicked: split.raceManager.joinRoom(roomCodeInput.text.toUpperCase())
             }
             Button {
                 text: "Cancel"
@@ -133,7 +133,7 @@ MenuBar {
                 if (split.gameMode === Split.SinglePlayer){
                     notMultiplayerDialog.open()
                 }else{
-                    split.getRaceManager().createRoom()
+                    split.raceManager.createRoom()
                 }
             }
         }

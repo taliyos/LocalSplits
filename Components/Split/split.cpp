@@ -185,6 +185,7 @@ void Split::setGameMode(GameMode mode){
         connect(m_racemanager, &racemanager::runnerSplit, m_runnerModel, &RunnerModel::updateSplit);
         connect(m_racemanager, &racemanager::runnerPaused, this, &Split::onRemotePause);
         connect(m_racemanager, &racemanager::runnerReset, this, &Split::onRemoteReset);
+        emit raceManagerChanged();
     }
 
     m_gameMode = mode;
