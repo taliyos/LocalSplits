@@ -2,9 +2,13 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QSettings>
 
 racemanager::racemanager(QObject *parent) : QObject{parent}
 {
+    QSettings settings;
+    m_serverUrl = settings.value("serverAddress", "localhost:8080").toString();
+
     m_socket = new QWebSocket("LocalSplits", QWebSocketProtocol::VersionLatest, this);
 
     connect(m_socket, &QWebSocket::connected, this, &racemanager::onConnected);
@@ -35,7 +39,7 @@ void racemanager::joinRoom(const QString& roomId){
     }
     m_roomId = roomId;
     emit roomIdChanged();
-    QString url = QString("%1?roomId=%2").arg(SERVER_URL, roomId);
+    QString url = QString("ws://%1/race?roomId=%2").arg(m_serverUrl, roomId);
     m_socket->open(QUrl(url));
     qDebug() << "Connecting to room:" << roomId;
 }
@@ -138,5 +142,24 @@ void racemanager::setUsername(const QString& username){
 
 bool racemanager::isConnected() const {return m_connected;}
 QString racemanager::getRoomId() const { return m_roomId; }
+
+QString racemanager::getServerAddress() const {return m_serverUrl;}
+void racemanager::setServerAddress (const QString& serverAddress) {
+    if (m_serverUrl == serverAddress){
+        return;
+    }
+    m_serverUrl = serverAddress;
+    QSettings settings;
+    settings.setValue("serverAddress", m_serverUrl);
+
+    emit serverAddressChanged();
+}
+
+
+
+
+
+
+
 
 

@@ -13,6 +13,7 @@ class racemanager : public QObject
 
     Q_PROPERTY(bool connected READ isConnected NOTIFY connectedChanged)
     Q_PROPERTY(QString roomId READ getRoomId NOTIFY roomIdChanged)
+    Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
 
 public:
     explicit racemanager(QObject *parent = nullptr);
@@ -29,6 +30,9 @@ public:
     Q_INVOKABLE void sendRunEnded(const QString& finalTime);
     Q_INVOKABLE void setUsername(const QString& username);
 
+    QString getServerAddress() const;
+    void setServerAddress(const QString& serverAddress);
+
 signals:
     void connectedChanged();
     void roomIdChanged();
@@ -39,6 +43,7 @@ signals:
     void runnerFinished(const QString& runner, const QString& finalTime);
     void runnerConnected(const QString& runner);
     void runnerDisconnected(const QString& runner);
+    void serverAddressChanged();
 
 private slots:
     void onConnected();
@@ -48,6 +53,7 @@ private slots:
 
 private:
     QString generateRoomCode();
+    QString m_serverUrl;
 
     QWebSocket* m_socket;
     bool m_connected = false;
@@ -56,7 +62,6 @@ private:
 
     void sendMessage(const QJsonObject& payload);
 
-    static constexpr const char* SERVER_URL = "ws://localhost:8080/race";
 };
 
 #endif

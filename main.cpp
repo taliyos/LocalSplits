@@ -20,8 +20,9 @@ int main(int argc, char *argv[])
 
     qDebug() << "App starting";
 
-        QCoreApplication::setApplicationName("LocalSplits");
-        QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setOrganizationName("LocalSplits");
+    QCoreApplication::setApplicationName("LocalSplits");
+    QCoreApplication::setApplicationVersion("0.1");
 
     QGuiApplication app(argc, argv);
 

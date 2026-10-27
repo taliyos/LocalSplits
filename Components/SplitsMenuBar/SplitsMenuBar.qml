@@ -23,9 +23,6 @@ MenuBar {
     Dialog {
         id: joinRoomDialog
 
-        property bool joinSuccess: false
-        property string statusMessage: ""
-
         title: "Join Room"
         modal: true
         anchors.centerIn: Overlay.overlay
@@ -63,6 +60,50 @@ MenuBar {
                 DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
                 enabled: roomCodeInput.text.length > 0
                 onClicked: split.raceManager.joinRoom(roomCodeInput.text.toUpperCase())
+            }
+            Button {
+                text: "Cancel"
+                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+            }
+        }
+    }
+    Dialog {
+        id: serverAddressDialog
+
+        title: "Server Address"
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        width: 250
+
+        onOpened: {
+            serverAddressInput.text = split.raceManager.serverAddress
+            serverAddressInput.forceActiveFocus()
+        }
+
+        Column {
+            width: parent.width
+            spacing: 12
+
+            Text {
+                text: "Server address host:port"
+                color: "black"
+            }
+
+            TextField {
+                id: serverAddressInput
+                width: parent.width
+                placeholderText: "e.g. 192.168.1.5:8080"
+                Keys.onReturnPressed: serverAddressConfirmButton.clicked()
+            }
+        }
+
+        footer: DialogButtonBox {
+            Button {
+                id: serverAddressConfirmButton
+                text: "Save"
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+                enabled: serverAddressInput.text.length > 0
+                onClicked: split.raceManager.serverAddress = serverAddressInput.text.trim()
             }
             Button {
                 text: "Cancel"
@@ -150,8 +191,16 @@ MenuBar {
         }
 
         SplitsMenuItem {
-            text: qsTr("Preferences")
+            text: qsTr("Server Address")
+            onTriggered: {
+                if (split.gameMode === Split.SinglePlayer){
+                    notMultiplayerDialog.open()
+                }else{
+                    serverAddressDialog.open()
+                }
+            }
         }
+
         MenuSeparator {}
         SplitsMenuItem {
             text: qsTr("Quit")
