@@ -30,8 +30,6 @@ MenuBar {
 
         onOpened: {
             roomCodeInput.text = ""
-            joinRoomDialog.statusMessage = ""
-            joinRoomDialog.joinSuccess = false
             roomCodeInput.forceActiveFocus()
         }
 
