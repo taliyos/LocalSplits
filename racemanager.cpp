@@ -3,9 +3,12 @@
 #include <QJsonDocument>
 #include <QDebug>
 #include <QSettings>
+#include <QTimer>
 
 racemanager::racemanager(QObject *parent) : QObject{parent}
 {
+    m_clock.start();
+
     QSettings settings;
     m_serverUrl = settings.value("serverAddress", "localhost:8080").toString();
 
@@ -91,6 +94,28 @@ void racemanager::sendMessage(const QJsonObject& payload){
     m_socket->sendTextMessage(json);
 }
 
+void racemanager::sendPing(){
+    sendMessage({
+                 {"event", "ping"},
+                 {"clientTime", m_clock.elapsed()}
+    });
+}
+
+void racemanager::handlePong(const QJsonObject& data){
+    qint64 receiveTime = m_clock.elapsed();
+    qint64 sendTime = data["clientTime"].toInteger();
+    qint64 serverTime = data["serverTime"].toInteger();
+
+    qint64 roundTrip = receiveTime - sendTime;
+    qDebug() << "Ping round trip: " << roundTrip <<"ms";
+
+    if (roundTrip < m_bestRoundTrip){
+        m_bestRoundTrip = roundTrip;
+        m_clockOffset = serverTime - (sendTime + roundTrip / 2);
+        qDebug() << "New clock offset:" << m_clockOffset << "ms";
+    }
+}
+
 void racemanager::onConnected(){
     m_connected = true;
     emit connectedChanged();
@@ -103,6 +128,11 @@ void racemanager::onConnected(){
         {"runner", m_username}
     });
     qDebug() << "Connected to room:" << m_roomId;
+
+    m_bestRoundTrip = std::numeric_limits<qint64>::max();
+    for(int i = 0; i < 5; i++){
+        QTimer::singleShot(i*200, this, &racemanager::sendPing);
+    }
 }
 
 void racemanager::onDisconnected(){
@@ -114,8 +144,15 @@ void racemanager::onDisconnected(){
 void racemanager::onMessageReceived(const QString& message){
     QJsonObject data = QJsonDocument::fromJson(message.toUtf8()).object();
     QString event = data["event"].toString();
+
+    if (event == "pong"){
+        handlePong(data);
+        return;
+    }
+
     QString runner = data["runner"].toString();
     qDebug() << "EVENT RECEIVED:" << data;
+
 
     if (event == "split"){
         emit runnerSplit(runner, data["splitIndex"].toInt(), data["splitTime"].toString());

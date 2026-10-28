@@ -49,13 +49,29 @@ class RaceWebSocketHandler (
 
     }
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        println("Received from ${session.id}: ${message.payload}")
         val roomId = sessionRoomMap[session.id] ?: return
         val sessions = rooms[roomId] ?: return
 
         val data = objectMapper.readTree(message.payload)
         val event = data["event"]?.stringValue()
         val runner = data["runner"]?.stringValue()
+
+        // answer pings directly; never forward them
+        if (event == "ping") {
+            val clientTime = data["clientTime"]?.asLong() ?: return
+            val pong = objectMapper.writeValueAsString(
+                mapOf(
+                    "event" to "pong",
+                    "clientTime" to clientTime,
+                    "serverTime" to serverTimeMs()
+                )
+            )
+            session.sendMessage(TextMessage(pong))
+            return
+        }
+
+        println("Received from ${session.id}: ${message.payload}")
+
         if (event == "joined" && runner != null) {
             sessionUsernameMap[session.id] = runner
         }
@@ -94,7 +110,8 @@ class RaceWebSocketHandler (
 
         println("Runner disconnected from room $roomId")
     }
- 
+
+    private fun serverTimeMs(): Long = System.nanoTime() / 1_000_000
 
     private fun getRoomID(session: WebSocketSession): String? {
         val query = session.uri?.query ?: return null

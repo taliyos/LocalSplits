@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QRandomGenerator>
+#include <QElapsedTimer>
+#include <limits>
 
 class racemanager : public QObject
 {
@@ -61,6 +63,13 @@ private:
     QString m_username;
 
     void sendMessage(const QJsonObject& payload);
+
+    void sendPing();
+    void handlePong(const QJsonObject& data);
+
+    QElapsedTimer m_clock;
+    qint64 m_clockOffset = 0;
+    qint64 m_bestRoundTrip = std::numeric_limits<qint64>::max();
 
 };
 
