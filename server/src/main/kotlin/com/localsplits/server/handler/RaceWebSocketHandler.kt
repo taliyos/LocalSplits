@@ -6,51 +6,45 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import tools.jackson.databind.ObjectMapper
-import tools.jackson.module.kotlin.jacksonObjectMapper
-import java.net.URLDecoder
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 
-
-data class RaceMessage(
-    val event: String = "",
-    val runner: String = "",
-    val splitIndex: Int = 0,
-    val splitTime: String = "",
-    val currentTime: String = "",
-    val finalTime: String = ""
-)
-
-
+private const val COUNTDOWN_MS = 3000L
 @Component
 class RaceWebSocketHandler (
     private val objectMapper: ObjectMapper
 ) : TextWebSocketHandler() {
 
-    private val rooms = ConcurrentHashMap<String, CopyOnWriteArrayList<WebSocketSession>>()
-    private val sessionRoomMap = ConcurrentHashMap<String, String>()
-    private val sessionUsernameMap = ConcurrentHashMap<String, String>()
+    private val rooms = ConcurrentHashMap<String, Room>()
+    private val playerRoomMap = ConcurrentHashMap<String, String>()
+    private val playerUsernameMap = ConcurrentHashMap<String, String>()
 
-    override fun afterConnectionEstablished(session: WebSocketSession) {
-        val roomId = getRoomID(session) ?: run {
-            session.close(CloseStatus.BAD_DATA)
+    override fun afterConnectionEstablished(player: WebSocketSession) {
+        val roomId = getRoomID(player) ?: run {
+            player.close(CloseStatus.BAD_DATA)
             return
         }
-        val sessions = rooms.computeIfAbsent(roomId) { CopyOnWriteArrayList() }
+        val room = rooms.computeIfAbsent(roomId) { Room() }
 
-        sessions.forEach { existingSession ->
-            val username = sessionUsernameMap[existingSession.id] ?: return@forEach
-            session.sendMessage(TextMessage("""{"event":"joined","runner":"$username"}"""))
+        room.players.forEach { existingPlayer ->
+            val username = playerUsernameMap[existingPlayer.id] ?: return@forEach
+            send(player, toJson(mapOf("event" to "joined", "runner" to username)))
         }
-        rooms.getOrPut(roomId) { CopyOnWriteArrayList() }.add(session)
-        sessionRoomMap[session.id] = roomId
+        room.players.add(player)
+        playerRoomMap[player.id] = roomId
 
-        println("Runner joined room $roomId | " + "Total in room: ${rooms[roomId]?.size}")
+        val runningStartAt = synchronized(room){
+            if (room.status == RoomStatus.RUNNING) room.startAt else null
+        }
+        if (runningStartAt != null) {
+            send(player, toJson(mapOf("event" to "start", "startAt" to runningStartAt)))
+        }
 
+        println("Runner joined room $roomId | Total in room: ${room.players.size}")
     }
-    override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        val roomId = sessionRoomMap[session.id] ?: return
-        val sessions = rooms[roomId] ?: return
+
+    override fun handleTextMessage(player: WebSocketSession, message: TextMessage) {
+        val roomId = playerRoomMap[player.id] ?: return
+        val room = rooms[roomId] ?: return
 
         val data = objectMapper.readTree(message.payload)
         val event = data["event"]?.stringValue()
@@ -59,83 +53,90 @@ class RaceWebSocketHandler (
         // answer pings directly; never forward them
         if (event == "ping") {
             val clientTime = data["clientTime"]?.asLong() ?: return
-            val pong = objectMapper.writeValueAsString(
-                mapOf(
-                    "event" to "pong",
-                    "clientTime" to clientTime,
-                    "serverTime" to serverTimeMs()
+            send(
+                player, toJson(
+                    mapOf(
+                        "event" to "pong",
+                        "clientTime" to clientTime,
+                        "serverTime" to serverTimeMs()
+                    )
                 )
             )
-            session.sendMessage(TextMessage(pong))
             return
         }
 
-        println("Received from ${session.id}: ${message.payload}")
+        println("Received from ${player.id}: ${message.payload}")
 
-        if (event == "joined" && runner != null) {
-            sessionUsernameMap[session.id] = runner
+        if (event == "requestStart"){
+            handleRequestStart(room)
+            return
         }
 
-        sessions
-            .filter { it.id != session.id && it.isOpen }
-            .forEach { other: WebSocketSession ->
-                runCatching {
-                    println("Forwarding to ${other.id}: ${message.payload}")
-                    other.sendMessage(TextMessage(message.payload))
-                }.onFailure {
-                    println("Failed to forward to session: ${other.id}")
-                }
-            }
-    }
-    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
-        val roomId = sessionRoomMap.remove(session.id) ?: return
-        sessionUsernameMap.remove(session.id) ?: return
-        val sessions = rooms[roomId] ?: return
-        sessions.remove(session)
+        if (event == "reset"){
+            synchronized(room){room.status = RoomStatus.IDLE}
+        }
 
-        if(sessions.isEmpty()){
+        if (event == "joined" && runner != null) {
+            playerUsernameMap[player.id] = runner
+        }
+
+        room.players
+            .filter { it.id != player.id }
+            .forEach { other -> send(other, message.payload) }
+    }
+
+    private fun send(player: WebSocketSession, text: String){
+        runCatching{
+            synchronized(player) {
+                if (player.isOpen) player.sendMessage(TextMessage(text))
+            }
+            }.onFailure {
+            println("Failed to send to player: ${player.id}: ${it.message}")
+        }
+    }
+
+    private fun broadcast(room: Room, payload: Map<String, Any>){
+        val text = toJson(payload)
+        room.players.forEach {send(it, text)}
+    }
+
+    private fun handleRequestStart(room: Room) {
+        val startAt = synchronized(room){
+            if(room.status != RoomStatus.IDLE) return
+            room.status = RoomStatus.RUNNING
+            room.startAt = serverTimeMs() + COUNTDOWN_MS
+            room.startAt
+        }
+        println("Race starting at $startAt (in ${COUNTDOWN_MS}ms)")
+        broadcast(room, mapOf("event" to "start", "startAt" to startAt))
+    }
+
+    override fun afterConnectionClosed(player: WebSocketSession, status: CloseStatus) {
+        val roomId = playerRoomMap.remove(player.id) ?: return
+        playerUsernameMap.remove(player.id) ?: return
+        val room = rooms[roomId] ?: return
+        room.players.remove(player)
+
+        if (room.players.isEmpty()) {
             rooms.remove(roomId)
             println("Room $roomId is empty, removed")
         }
 
-        val disconnectMsg = objectMapper.writeValueAsString(
-            mapOf(
-                "event" to "left",
-                "runner" to (session.attributes["runner"] ?: "Unknown")
-            )
-        )
-        sessions
-            .filter {it.isOpen}
-            .forEach {runCatching {it.sendMessage(TextMessage(disconnectMsg)) } }
+        broadcast(room, mapOf(
+            "event" to "left",
+            "runner" to (player.attributes["runner"] ?: "Unknown")
+        ))
 
         println("Runner disconnected from room $roomId")
     }
 
     private fun serverTimeMs(): Long = System.nanoTime() / 1_000_000
 
-    private fun getRoomID(session: WebSocketSession): String? {
-        val query = session.uri?.query ?: return null
+    private fun toJson(payload: Map<String, Any>): String = objectMapper.writeValueAsString(payload)
 
-        return query.split("&").map {it.split("=")}.firstOrNull { it.size == 2 && it[0] == "roomId" }?.get(1)
+    private fun getRoomID(player: WebSocketSession): String? {
+        val query = player.uri?.query ?: return null
+
+        return query.split("&").map { it.split("=") }.firstOrNull { it.size == 2 && it[0] == "roomId" }?.get(1)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
