@@ -53,20 +53,35 @@ void racemanager::leaveRoom() {
     emit roomIdChanged();
 }
 
+void racemanager::requestStart(){
+    sendMessage({{"event", "requestStart"}});
+}
+
+void racemanager::requestPause(){
+    sendMessage({{"event", "requestPause"}});
+}
+
+void racemanager::requestResume(){
+    sendMessage({{"event", "requestResume"}});
+}
+
+void racemanager::handleStart(const QJsonObject& data){
+    qint64 startAt = data["startAt"].toInteger();
+    if(startAt == m_lastStartAt) return;
+    m_lastStartAt = startAt;
+
+    qint64 localStart = startAt - m_clockOffset;
+    qint64 delayMs = localStart - m_clock.elapsed();
+    qDebug() << "Race starts in " << delayMs << "ms";
+    emit raceStartScheduled(delayMs);
+}
+
 void racemanager::sendSplit(int splitIndex, const QString& splitTime){
     sendMessage({
         {"event", "split"},
         {"runner", m_username},
         {"splitIndex", splitIndex},
         {"splitTime", splitTime}
-    });
-}
-
-void racemanager::sendPause(const QString& currentTime){
-    sendMessage({
-        {"event", "pause"},
-        {"runner", m_username},
-        {"currentTime", currentTime}
     });
 }
 
@@ -156,14 +171,16 @@ void racemanager::onMessageReceived(const QString& message){
 
     if (event == "split"){
         emit runnerSplit(runner, data["splitIndex"].toInt(), data["splitTime"].toString());
-    }else if (event == "pause"){
-        emit runnerPaused(runner, data["currentTime"].toString());
+    }else if (event == "paused"){
+        emit racePaused(data["elapsed"].toInteger());
     }else if (event == "reset"){
         emit runnerReset(runner);
     }else if (event == "runEnded"){
         emit runnerFinished(runner, data["finalTime"].toString());
     }else if (event == "joined") {
         emit runnerConnected(runner);
+    }else if (event == "start"){
+        handleStart(data);
     }else{
         qWarning() << "Unknown event:" << event;
     }

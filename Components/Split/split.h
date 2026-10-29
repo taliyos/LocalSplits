@@ -91,8 +91,9 @@ public slots:
     void onResetButtonPress();
     void onSplitButtonPress();
     void onPauseButtonPress();
-    void onRemotePause();
+    void onRacePaused(qint64 elapsedMs);
     void onRemoteReset();
+    void onRaceStartScheduled(qint64 delayMs);
     Timer* getTimer() const;
 
 

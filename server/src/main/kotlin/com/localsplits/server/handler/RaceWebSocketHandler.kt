@@ -32,6 +32,18 @@ class RaceWebSocketHandler (
         room.players.add(player)
         playerRoomMap[player.id] = roomId
 
+        val catchUp = synchronized(room) {
+            when (room.status){
+                RoomStatus.RUNNING -> mapOf("event" to "start", "startAt" to room.startAt)
+                RoomStatus.PAUSED -> mapOf("event" to "paused", "elapsed" to room.pausedElapsed)
+                RoomStatus.IDLE -> null
+            }
+        }
+        if (catchUp != null) {
+            send(player, toJson(catchUp))
+        }
+
+
         val runningStartAt = synchronized(room){
             if (room.status == RoomStatus.RUNNING) room.startAt else null
         }
@@ -72,6 +84,16 @@ class RaceWebSocketHandler (
             return
         }
 
+        if (event == "requestPause"){
+            handleRequestPause(room)
+            return
+        }
+
+        if (event == "requestResume"){
+            handleRequestResume(room)
+            return
+        }
+
         if (event == "reset"){
             synchronized(room){room.status = RoomStatus.IDLE}
         }
@@ -108,6 +130,30 @@ class RaceWebSocketHandler (
             room.startAt
         }
         println("Race starting at $startAt (in ${COUNTDOWN_MS}ms)")
+        broadcast(room, mapOf("event" to "start", "startAt" to startAt))
+    }
+
+    private fun handleRequestPause(room: Room) {
+        val elapsed = synchronized(room){
+            if (room.status != RoomStatus.RUNNING) return
+            val now = serverTimeMs()
+            if (now < room.startAt) return
+            room.pausedElapsed = now - room.startAt
+            room.status = RoomStatus.PAUSED
+            room.pausedElapsed
+        }
+        println("Race paused at ${elapsed}ms")
+        broadcast(room, mapOf("event" to "paused", "elapsed" to elapsed))
+    }
+
+    private fun handleRequestResume(room: Room){
+        val startAt = synchronized(room){
+            if (room.status != RoomStatus.PAUSED) return
+            room.startAt = serverTimeMs() - room.pausedElapsed
+            room.status = RoomStatus.RUNNING
+            room.startAt
+        }
+        println("Race resuemd, new startAt $startAt")
         broadcast(room, mapOf("event" to "start", "startAt" to startAt))
     }
 

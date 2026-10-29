@@ -24,6 +24,10 @@ QString Timer::getTime() {
     }else{
         elapsedTimer = pausedTime + (elapsedTimer - pausedTime) - deadTime;
     }
+
+    bool negative = elapsedTimer < 0;
+    if (negative) elapsedTimer = -elapsedTimer;
+
     qint64 elapsedTimerRounded = (elapsedTimer)/ 10;
 
     qint64 hours = elapsedTimerRounded / 360000;
@@ -39,7 +43,8 @@ QString Timer::getTime() {
 
     bool hasHigherUnits = (hours > 0 || minutes > 0);
 
-    QString readableTime = formatTime(timeArray, 0, QString(""))
+    QString readableTime = QString(negative ? "-" : "")
+                           + formatTime(timeArray, 0, QString(""))
                            + formatTime(timeArray, 1, QString(":"));
 
     if (hasHigherUnits){
@@ -101,5 +106,23 @@ void Timer::reset(){
     pausedTime = 0;
     resumedTime = 0;
     deadTime = 0;
+}
 
+void Timer::startIn(qint64 delayMs){
+    timerPaused = false;
+    pausedTime = 0;
+    deadTime = timer.elapsed() + delayMs;
+}
+
+bool Timer::isCountingDown(){
+    return !timerPaused && timer.elapsed() < deadTime;
+}
+
+void Timer::pauseAt(qint64 elapsedMs){
+    timerPaused = true;
+    pausedTime = elapsedMs;
+}
+
+bool Timer::isPaused(){
+    return timerPaused;
 }

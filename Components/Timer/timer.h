@@ -20,6 +20,12 @@ public slots:
     void onPauseButtonPress();
     void reset();
 
+    void startIn(qint64 delayMs);
+    bool isCountingDown();
+
+    void pauseAt(qint64 elapsedMs);
+    bool isPaused();
+
 signals:
     void timeChanged();
 

@@ -42,6 +42,8 @@ racemanager* Split::getRaceManager() const{
 }
 
 void Split::onSplitButtonPress(){
+    if(m_timer->isCountingDown()) return;
+
     if(m_data->items().size() == 0){
         if(!m_run_ended){
             if(m_run_started){
@@ -52,11 +54,12 @@ void Split::onSplitButtonPress(){
         }
     }
     if(!m_run_started){
+        if(m_gameMode == GameMode::MultiPlayer && m_racemanager){
+            m_racemanager->requestStart();
+            return;
+        }
         m_run_started = true;
         m_timer->onPauseButtonPress();
-        if(m_gameMode == GameMode::MultiPlayer && m_racemanager){
-            m_racemanager->sendPause(m_timer->getTime());
-        }
         return;
     }
     if(m_run_ended){
@@ -84,24 +87,37 @@ void Split::onSplitButtonPress(){
     m_splitrow++;
 }
 
-void Split::onPauseButtonPress(){
+void Split::onRaceStartScheduled(qint64 delayMs){
     if(m_run_ended) return;
-
-    if(!m_run_started){
-        m_run_started = true;
-    }
-    m_timer->onPauseButtonPress();
-    if (m_gameMode == GameMode::MultiPlayer && m_racemanager){
-        m_racemanager->sendPause(m_timer->getTime());
-    }
+    m_run_started = true;
+    qDebug() << "Run starting, delay " << delayMs << "ms";
+    m_timer->startIn(delayMs);
 }
 
-void Split::onRemotePause(){
+void Split::onPauseButtonPress(){
     if(m_run_ended) return;
+    if(m_timer->isCountingDown()) return;
+
+    if(m_gameMode == GameMode::MultiPlayer && m_racemanager){
+        if(!m_run_started) return;
+        if(m_timer->isPaused()){
+            m_racemanager->requestResume();
+        }else{
+            m_racemanager->requestPause();
+        }
+        return;
+    }
+
     if(!m_run_started){
         m_run_started = true;
     }
     m_timer->onPauseButtonPress();
+}
+
+void Split::onRacePaused(qint64 elapsedMs){
+    if(m_run_ended) return;
+    m_run_started = true;
+    m_timer->pauseAt(elapsedMs);
 }
 
 void Split::onResetButtonPress(){
@@ -141,7 +157,7 @@ void Split::openFile(const QString& fileLocation) {
     const QUrl url(fileLocation);
     QString filePath;
     if (url.isLocalFile()) {
-       filePath = QDir::toNativeSeparators(url.toLocalFile());
+        filePath = QDir::toNativeSeparators(url.toLocalFile());
     } else {
         filePath = fileLocation;
     }
@@ -183,8 +199,9 @@ void Split::setGameMode(GameMode mode){
         m_racemanager->setUsername(m_username);
         connect(m_racemanager, &racemanager::runnerConnected, m_runnerModel, &RunnerModel::addRunner);
         connect(m_racemanager, &racemanager::runnerSplit, m_runnerModel, &RunnerModel::updateSplit);
-        connect(m_racemanager, &racemanager::runnerPaused, this, &Split::onRemotePause);
+        connect(m_racemanager, &racemanager::racePaused, this, &Split::onRacePaused);
         connect(m_racemanager, &racemanager::runnerReset, this, &Split::onRemoteReset);
+        connect(m_racemanager, &racemanager::raceStartScheduled, this, &Split::onRaceStartScheduled);
         emit raceManagerChanged();
     }
 
