@@ -16,6 +16,7 @@ class racemanager : public QObject
     Q_PROPERTY(bool connected READ isConnected NOTIFY connectedChanged)
     Q_PROPERTY(QString roomId READ getRoomId NOTIFY roomIdChanged)
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
+    Q_PROPERTY(bool sharedPause READ isSharedPause NOTIFY sharedPauseChanged)
 
 public:
     explicit racemanager(QObject *parent = nullptr);
@@ -24,11 +25,11 @@ public:
     QString getRoomId() const;
 
     Q_INVOKABLE void joinRoom(const QString& roomId);
-    Q_INVOKABLE void createRoom();
+    Q_INVOKABLE void createRoom(bool sharedPause);
     Q_INVOKABLE void leaveRoom();
     Q_INVOKABLE void sendSplit(int splitIndex, const QString& splitTime);
-    Q_INVOKABLE void sendReset();
-    Q_INVOKABLE void sendRunEnded(const QString& finalTime);
+    Q_INVOKABLE void requestReset();
+    Q_INVOKABLE void sendRunEnded(qint64 finalMs);
     Q_INVOKABLE void setUsername(const QString& username);
     Q_INVOKABLE void requestStart();
     Q_INVOKABLE void requestPause();
@@ -37,18 +38,23 @@ public:
     QString getServerAddress() const;
     void setServerAddress(const QString& serverAddress);
 
+    bool isSharedPause() const;
+
 signals:
     void connectedChanged();
     void roomIdChanged();
     void runnerSplit(const QString& runner, int splitIndex, const QString& splitTime);
     void roomCodeGenerated(const QString& code);
-    void runnerReset(const QString& runner);
-    void runnerFinished(const QString& runner, const QString& finalTime);
+    void raceReset();
+    void runnerFinished(const QString& runner, int place);
     void runnerConnected(const QString& runner);
     void runnerDisconnected(const QString& runner);
     void serverAddressChanged();
     void raceStartScheduled(qint64 delayMs);
     void racePaused(qint64 elapsedMs);
+    void runnerPlaced(const QString& runner, int place);
+    void roomEntered();
+    void sharedPauseChanged();
 
 private slots:
     void onConnected();
@@ -76,6 +82,9 @@ private:
 
     void handleStart(const QJsonObject& data);
     qint64 m_lastStartAt = -1;
+
+    void openRoom(const QString& roomId, const QString& extraQuery);
+    bool m_sharedPause = true;
 
 };
 

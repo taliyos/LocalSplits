@@ -92,7 +92,7 @@ public slots:
     void onSplitButtonPress();
     void onPauseButtonPress();
     void onRacePaused(qint64 elapsedMs);
-    void onRemoteReset();
+    void resetRun();
     void onRaceStartScheduled(qint64 delayMs);
     Timer* getTimer() const;
 
@@ -108,6 +108,7 @@ private:
     int m_splitrow = 0;
     bool m_run_ended = false;
     bool m_run_started = false;
+    bool inRace() const;
 };
 
 

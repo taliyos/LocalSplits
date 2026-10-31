@@ -17,13 +17,7 @@ Timer::Timer(const int& updateMilisecondInterval, QObject *parent) : QObject{par
 QString Timer::getTime() {
 
 
-    qint64 elapsedTimer = timer.elapsed();
-
-    if(timerPaused){
-        elapsedTimer = pausedTime;
-    }else{
-        elapsedTimer = pausedTime + (elapsedTimer - pausedTime) - deadTime;
-    }
+    qint64 elapsedTimer = elapsedMs();
 
     bool negative = elapsedTimer < 0;
     if (negative) elapsedTimer = -elapsedTimer;
@@ -125,4 +119,9 @@ void Timer::pauseAt(qint64 elapsedMs){
 
 bool Timer::isPaused(){
     return timerPaused;
+}
+
+qint64 Timer::elapsedMs() const{
+    if(timerPaused) return pausedTime;
+    return timer.elapsed() - deadTime;
 }

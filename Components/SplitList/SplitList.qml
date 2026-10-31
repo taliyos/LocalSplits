@@ -31,7 +31,7 @@ ColumnLayout {
 
                 Text {
                     anchors.fill: parent
-                    text: model.name
+                    text: model.place > 0 ? model.place + ". " + model.name : model.name
                     color: "white"
                     font.pointSize: 8
                     horizontalAlignment: Text.AlignHCenter

@@ -16,6 +16,7 @@ QVariant RunnerModel::data(const QModelIndex& index, int role) const {
         return runner.name;
     if (role == SplitsRole)
         return QVariant::fromValue(runner.splits);
+    if (role == PlaceRole) return runner.place;
     return QVariant();
 }
 
@@ -23,7 +24,8 @@ QHash<int, QByteArray> RunnerModel::roleNames() const {
 
     return {
         { NameRole,   "name"   },
-        { SplitsRole, "splits" }
+        { SplitsRole, "splits" },
+        { PlaceRole, "place"}
     };
 }
 
@@ -55,6 +57,14 @@ void RunnerModel::removeRunner(const QString& name) {
     emit runnerDataChanged();
 }
 
+void RunnerModel::setPlace(const QString& name, int place){
+    int i = findRunner(name);
+    if(i == -1) return;
+    m_runners[i].place = place;
+    QModelIndex idx = index(i);
+    emit dataChanged(idx, idx, {PlaceRole});
+}
+
 void RunnerModel::updateSplit(const QString& name, int splitIndex, const QString& time) {
     int i = findRunner(name);
     if (i == -1){
@@ -84,6 +94,22 @@ void RunnerModel::resetRunner(const QString& name) {
     emit runnerDataChanged();
 }
 
+void RunnerModel::clear(){
+    beginResetModel();
+    m_runners.clear();
+    endResetModel();
+    emit runnerDataChanged();
+}
+
+void RunnerModel::resetAllSplits(){
+    if(m_runners.isEmpty()) return;
+    for(Runner& runner : m_runners){
+        runner.splits.clear();
+        runner.place = 0;
+    }
+    emit dataChanged(index(0), index(m_runners.size() - 1, {SplitsRole}));
+    emit runnerDataChanged();
+}
 
 
 

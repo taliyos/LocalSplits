@@ -13,6 +13,7 @@ class Timer : public QObject
 public:
     explicit Timer(const int& updateMilisecondInterval, QObject* parent = nullptr);
     void setTime(const QString &newTime);
+    qint64 elapsedMs() const;
 
 public slots:
     QString getTime();

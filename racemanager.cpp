@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QSettings>
 #include <QTimer>
+#include <QJsonArray>
 
 racemanager::racemanager(QObject *parent) : QObject{parent}
 {
@@ -30,22 +31,30 @@ QString racemanager::generateRoomCode(){
     return code;
 }
 
-void racemanager::createRoom(){
-    QString code = generateRoomCode();
-    joinRoom(code);
-    emit roomCodeGenerated(code);
-}
-
-void racemanager::joinRoom(const QString& roomId){
-    if(m_connected){
-        leaveRoom();
-    }
+void racemanager::openRoom(const QString& roomId, const QString& extraQuery){
+    if(m_connected) leaveRoom();
     m_roomId = roomId;
     emit roomIdChanged();
-    QString url = QString("ws://%1/race?roomId=%2").arg(m_serverUrl, roomId);
+    QString base = m_serverUrl;
+    if(!base.startsWith("ws://") && !base.startsWith("wss://")){
+        base = "ws://" + base;
+    }
+    QString url = QString("%1/race?roomId=%2%3").arg(base, roomId, extraQuery);
     m_socket->open(QUrl(url));
     qDebug() << "Connecting to room:" << roomId;
 }
+
+void racemanager::joinRoom(const QString& roomId){
+    openRoom(roomId, "");
+}
+
+void racemanager::createRoom(bool sharedPause){
+    QString code = generateRoomCode();
+    openRoom(code, sharedPause ? "&sharedPause=true" : "&sharedPause=false");
+    emit roomCodeGenerated(code);
+}
+
+bool racemanager::isSharedPause() const {return m_sharedPause;}
 
 void racemanager::leaveRoom() {
     m_socket->close();
@@ -85,18 +94,16 @@ void racemanager::sendSplit(int splitIndex, const QString& splitTime){
     });
 }
 
-void racemanager::sendReset(){
+void racemanager::requestReset(){
     sendMessage({
-        {"event", "reset"},
-        {"runner", m_username}
+        {"event", "requestReset"},
     });
 }
 
-void racemanager::sendRunEnded(const QString& finalTime){
+void racemanager::sendRunEnded(qint64 finalMs){
     sendMessage({
         {"event", "runEnded"},
-        {"runner", m_username},
-        {"finalTime", finalTime}
+        {"finalMs", finalMs}
     });
 }
 
@@ -136,6 +143,7 @@ void racemanager::onConnected(){
     emit connectedChanged();
     qDebug() << "Connecting with username: " << m_username;
 
+    emit roomEntered();
     emit runnerConnected(m_username);
 
     sendMessage({
@@ -174,13 +182,21 @@ void racemanager::onMessageReceived(const QString& message){
     }else if (event == "paused"){
         emit racePaused(data["elapsed"].toInteger());
     }else if (event == "reset"){
-        emit runnerReset(runner);
-    }else if (event == "runEnded"){
-        emit runnerFinished(runner, data["finalTime"].toString());
+        emit raceReset();
+    }else if (event == "results"){
+        QJsonArray results = data["results"].toArray();
+        for (int i = 0; i < results.size(); i++){
+            emit runnerPlaced(results[i].toObject()["runner"].toString(), i + 1);
+        }
     }else if (event == "joined") {
         emit runnerConnected(runner);
     }else if (event == "start"){
         handleStart(data);
+    }else if (event == "left"){
+        emit runnerDisconnected(runner);
+    }else if (event == "roomSettings"){
+        m_sharedPause = data["sharedPause"].toBool();
+        emit sharedPauseChanged();
     }else{
         qWarning() << "Unknown event:" << event;
     }

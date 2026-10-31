@@ -41,6 +41,10 @@ racemanager* Split::getRaceManager() const{
     return m_racemanager;
 }
 
+bool Split::inRace() const{
+    return m_gameMode == GameMode::MultiPlayer && m_racemanager && m_racemanager->isConnected();;
+}
+
 void Split::onSplitButtonPress(){
     if(m_timer->isCountingDown()) return;
 
@@ -54,7 +58,7 @@ void Split::onSplitButtonPress(){
         }
     }
     if(!m_run_started){
-        if(m_gameMode == GameMode::MultiPlayer && m_racemanager){
+        if(inRace()){
             m_racemanager->requestStart();
             return;
         }
@@ -72,7 +76,7 @@ void Split::onSplitButtonPress(){
         qDebug() << "Run Ended";
         m_run_ended = true;
         if (m_gameMode == GameMode::MultiPlayer && m_racemanager){
-            m_racemanager->sendRunEnded(m_timer->getTime());
+            m_racemanager->sendRunEnded(m_timer->elapsedMs());
         }
         m_timer->onPauseButtonPress();
         emit runEndedChanged();
@@ -98,14 +102,16 @@ void Split::onPauseButtonPress(){
     if(m_run_ended) return;
     if(m_timer->isCountingDown()) return;
 
-    if(m_gameMode == GameMode::MultiPlayer && m_racemanager){
+    if(inRace()){
         if(!m_run_started) return;
-        if(m_timer->isPaused()){
-            m_racemanager->requestResume();
-        }else{
-            m_racemanager->requestPause();
+        if(m_racemanager->isSharedPause()){
+            if(m_timer->isPaused()){
+                m_racemanager->requestResume();
+            }else{
+                m_racemanager->requestPause();
+            }
+            return;
         }
-        return;
     }
 
     if(!m_run_started){
@@ -121,22 +127,14 @@ void Split::onRacePaused(qint64 elapsedMs){
 }
 
 void Split::onResetButtonPress(){
-    m_timer->reset();
-    m_splitrow = 0;
-    m_run_ended = false;
-    m_run_started = false;
-    emit runEndedChanged();
-
-    if (m_gameMode == GameMode::MultiPlayer && m_racemanager){
-        m_racemanager->sendReset();
+    if (inRace()){
+        m_racemanager->requestReset();
+        return;
     }
-
-    for(int i = 0; i < (m_data->items().count()); i++){
-        m_data->setTimeatSplitIndex(0, i);
-    }
+    resetRun();
 }
 
-void Split::onRemoteReset(){
+void Split::resetRun(){
     m_timer->reset();
     m_splitrow = 0;
     m_run_ended = false;
@@ -146,6 +144,7 @@ void Split::onRemoteReset(){
     for(int i = 0; i < m_data->items().count(); i++){
         m_data->setTimeatSplitIndex(0,i);
     }
+    m_runnerModel->resetAllSplits();
 }
 
 
@@ -200,8 +199,11 @@ void Split::setGameMode(GameMode mode){
         connect(m_racemanager, &racemanager::runnerConnected, m_runnerModel, &RunnerModel::addRunner);
         connect(m_racemanager, &racemanager::runnerSplit, m_runnerModel, &RunnerModel::updateSplit);
         connect(m_racemanager, &racemanager::racePaused, this, &Split::onRacePaused);
-        connect(m_racemanager, &racemanager::runnerReset, this, &Split::onRemoteReset);
+        connect(m_racemanager, &racemanager::raceReset, this, &Split::resetRun);
         connect(m_racemanager, &racemanager::raceStartScheduled, this, &Split::onRaceStartScheduled);
+        connect(m_racemanager, &racemanager::roomEntered, m_runnerModel, &RunnerModel::clear);
+        connect(m_racemanager, &racemanager::runnerDisconnected, m_runnerModel, &RunnerModel::removeRunner);
+        connect(m_racemanager, &racemanager::runnerPlaced, m_runnerModel, &RunnerModel::setPlace);
         emit raceManagerChanged();
     }
 

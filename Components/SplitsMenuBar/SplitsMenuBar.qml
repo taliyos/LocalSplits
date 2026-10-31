@@ -127,6 +127,32 @@ MenuBar {
         standardButtons: Dialog.Ok
     }
 
+    Dialog{
+        id: createRoomDialog
+        title: "Create Room"
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        width: 250
+
+        CheckBox {
+            id: sharedPauseCheck
+            text: "Shared pause"
+            checked: true
+        }
+
+        footer: DialogButtonBox {
+            Button{
+                text: "Create"
+                DialogButtonBox.buttonRole: DDialogButtonBox.AcceptRole
+                onClicked: split.raceManager.createRoom(sharedPauseCheck.checked)
+            }
+            Button{
+                text: "Cancel"
+                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+            }
+        }
+    }
+
 
     SplitsMenu {
         title: qsTr("File")
@@ -172,7 +198,7 @@ MenuBar {
                 if (split.gameMode === Split.SinglePlayer){
                     notMultiplayerDialog.open()
                 }else{
-                    split.raceManager.createRoom()
+                    createRoomDialog.open()
                 }
             }
         }
