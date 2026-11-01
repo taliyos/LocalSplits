@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QJsonArray>
 
+static const int SYNC_PINGS = 5;
+
 racemanager::racemanager(QObject *parent) : QObject{parent}
 {
     m_clock.start();
@@ -20,6 +22,15 @@ racemanager::racemanager(QObject *parent) : QObject{parent}
     connect(m_socket, &QWebSocket::textMessageReceived, this, &racemanager::onMessageReceived);
     connect(m_socket, &QWebSocket::errorOccurred, this, &racemanager::onError);
 
+    m_keepAliveTimer = new QTimer(this);
+    m_keepAliveTimer->setInterval(10000);
+    connect(m_keepAliveTimer, &QTimer::timeout, this, &racemanager::keepAliveTick);
+
+    m_reconnectTimer = new QTimer(this);
+    m_reconnectTimer->setInterval(2000);
+    m_reconnectTimer->setSingleShot(true);
+    connect(m_reconnectTimer, &QTimer::timeout, this, &racemanager::tryReconnect);
+
 }
 
 QString racemanager::generateRoomCode(){
@@ -32,6 +43,12 @@ QString racemanager::generateRoomCode(){
 }
 
 void racemanager::openRoom(const QString& roomId, const QString& extraQuery){
+    m_shouldReconnect = false;
+    m_reconnecting = false;
+    m_reconnectTimer->stop();
+    m_lastStartAt = -1;
+    m_mySplits.clear();
+    m_finalMs = -1;
     if(m_connected) leaveRoom();
     m_roomId = roomId;
     emit roomIdChanged();
@@ -39,8 +56,8 @@ void racemanager::openRoom(const QString& roomId, const QString& extraQuery){
     if(!base.startsWith("ws://") && !base.startsWith("wss://")){
         base = "ws://" + base;
     }
-    QString url = QString("%1/race?roomId=%2%3").arg(base, roomId, extraQuery);
-    m_socket->open(QUrl(url));
+    m_roomUrl = QString("%1/race?roomId=%2%3").arg(base, roomId, extraQuery);
+    m_socket->open(QUrl(m_roomUrl));
     qDebug() << "Connecting to room:" << roomId;
 }
 
@@ -57,6 +74,8 @@ void racemanager::createRoom(bool sharedPause){
 bool racemanager::isSharedPause() const {return m_sharedPause;}
 
 void racemanager::leaveRoom() {
+    m_shouldReconnect = false;
+    m_reconnectTimer->stop();
     m_socket->close();
     m_roomId.clear();
     emit roomIdChanged();
@@ -75,6 +94,10 @@ void racemanager::requestResume(){
 }
 
 void racemanager::handleStart(const QJsonObject& data){
+    if(m_pongCount < SYNC_PINGS){
+        m_pendingStart = data;
+        return;
+    }
     qint64 startAt = data["startAt"].toInteger();
     if(startAt == m_lastStartAt) return;
     m_lastStartAt = startAt;
@@ -86,6 +109,7 @@ void racemanager::handleStart(const QJsonObject& data){
 }
 
 void racemanager::sendSplit(int splitIndex, const QString& splitTime){
+    m_mySplits[splitIndex] = splitTime;
     sendMessage({
         {"event", "split"},
         {"runner", m_username},
@@ -101,6 +125,7 @@ void racemanager::requestReset(){
 }
 
 void racemanager::sendRunEnded(qint64 finalMs){
+    m_finalMs = finalMs;
     sendMessage({
         {"event", "runEnded"},
         {"finalMs", finalMs}
@@ -124,6 +149,7 @@ void racemanager::sendPing(){
 }
 
 void racemanager::handlePong(const QJsonObject& data){
+    m_lastPongAt = m_clock.elapsed();
     qint64 receiveTime = m_clock.elapsed();
     qint64 sendTime = data["clientTime"].toInteger();
     qint64 serverTime = data["serverTime"].toInteger();
@@ -136,6 +162,16 @@ void racemanager::handlePong(const QJsonObject& data){
         m_clockOffset = serverTime - (sendTime + roundTrip / 2);
         qDebug() << "New clock offset:" << m_clockOffset << "ms";
     }
+    m_pongCount++;
+    if(m_pongCount == SYNC_PINGS && !m_pendingStart.isEmpty()){
+        QJsonObject pending = m_pendingStart;
+        m_pendingStart = QJsonObject();
+        handleStart(pending);
+    }
+    if(m_pongCount == SYNC_PINGS && m_reconnecting){
+        m_reconnecting = false;
+        resendMyRun();
+    }
 }
 
 void racemanager::onConnected(){
@@ -143,7 +179,9 @@ void racemanager::onConnected(){
     emit connectedChanged();
     qDebug() << "Connecting with username: " << m_username;
 
-    emit roomEntered();
+    m_shouldReconnect = true;
+    m_lastPongAt = m_clock.elapsed();
+    if(!m_reconnecting) emit roomEntered();
     emit runnerConnected(m_username);
 
     sendMessage({
@@ -153,15 +191,21 @@ void racemanager::onConnected(){
     qDebug() << "Connected to room:" << m_roomId;
 
     m_bestRoundTrip = std::numeric_limits<qint64>::max();
-    for(int i = 0; i < 5; i++){
+    m_pongCount = 0;
+    m_pendingStart = QJsonObject();
+    for(int i = 0; i < SYNC_PINGS; i++){
         QTimer::singleShot(i*200, this, &racemanager::sendPing);
     }
+
+    m_keepAliveTimer->start();
 }
 
 void racemanager::onDisconnected(){
     m_connected = false;
     qDebug() << "Disconnected from room:" << m_roomId;
     emit connectedChanged();
+    m_keepAliveTimer->stop();
+    if(m_shouldReconnect) m_reconnectTimer->start();
 }
 
 void racemanager::onMessageReceived(const QString& message){
@@ -180,8 +224,12 @@ void racemanager::onMessageReceived(const QString& message){
     if (event == "split"){
         emit runnerSplit(runner, data["splitIndex"].toInt(), data["splitTime"].toString());
     }else if (event == "paused"){
+        m_pendingStart = QJsonObject();
         emit racePaused(data["elapsed"].toInteger());
     }else if (event == "reset"){
+        m_mySplits.clear();
+        m_finalMs = -1;
+        m_pendingStart = QJsonObject();
         emit raceReset();
     }else if (event == "results"){
         QJsonArray results = data["results"].toArray();
@@ -200,6 +248,32 @@ void racemanager::onMessageReceived(const QString& message){
     }else{
         qWarning() << "Unknown event:" << event;
     }
+}
+
+bool racemanager::isInRoom() const { return m_connected || m_shouldReconnect; }
+
+void racemanager::tryReconnect(){
+    if(!m_shouldReconnect || m_socket->state() != QAbstractSocket::UnconnectedState) return;
+    m_reconnecting = true;
+    qDebug() << "Reconnecting to room:" << m_roomId;
+    m_socket->open(QUrl(m_roomUrl));
+}
+
+void racemanager::keepAliveTick(){
+    if(m_clock.elapsed() - m_lastPongAt > 25000){
+        qWarning() << "Connection lost, no pong";
+        m_socket->abort();
+        return;
+    }
+    sendPing();
+}
+
+void racemanager::resendMyRun(){
+    const QMap<int, QString> splits = m_mySplits;
+    for(auto it = splits.constBegin(); it != splits.constEnd(); ++it){
+        sendSplit(it.key(), it.value());
+    }
+    if(m_finalMs >= 0) sendRunEnded(m_finalMs);
 }
 
 void racemanager::onError(QAbstractSocket::SocketError error){

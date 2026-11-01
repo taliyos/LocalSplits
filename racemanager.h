@@ -8,6 +8,8 @@
 #include <QRandomGenerator>
 #include <QElapsedTimer>
 #include <limits>
+#include <QTimer>
+#include <QMap>
 
 class racemanager : public QObject
 {
@@ -39,6 +41,7 @@ public:
     void setServerAddress(const QString& serverAddress);
 
     bool isSharedPause() const;
+    bool isInRoom() const;
 
 signals:
     void connectedChanged();
@@ -85,6 +88,23 @@ private:
 
     void openRoom(const QString& roomId, const QString& extraQuery);
     bool m_sharedPause = true;
+
+    QTimer* m_keepAliveTimer;
+
+    int m_pongCount = 0;
+    QJsonObject m_pendingStart;
+
+    void tryReconnect();
+    void resendMyRun();
+    void keepAliveTick();
+
+    QTimer* m_reconnectTimer;
+    QString m_roomUrl;
+    bool m_shouldReconnect = false;
+    bool m_reconnecting = false;
+    qint64 m_lastPongAt = 0;
+    QMap<int, QString> m_mySplits;
+    qint64 m_finalMs = -1;
 
 };
 

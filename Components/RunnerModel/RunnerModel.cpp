@@ -107,7 +107,7 @@ void RunnerModel::resetAllSplits(){
         runner.splits.clear();
         runner.place = 0;
     }
-    emit dataChanged(index(0), index(m_runners.size() - 1, {SplitsRole}));
+    emit dataChanged(index(0), index(m_runners.size() - 1), {SplitsRole, PlaceRole});
     emit runnerDataChanged();
 }
 

@@ -42,7 +42,7 @@ racemanager* Split::getRaceManager() const{
 }
 
 bool Split::inRace() const{
-    return m_gameMode == GameMode::MultiPlayer && m_racemanager && m_racemanager->isConnected();;
+    return m_gameMode == GameMode::MultiPlayer && m_racemanager && m_racemanager->isInRoom();;
 }
 
 void Split::onSplitButtonPress(){
@@ -149,21 +149,22 @@ void Split::resetRun(){
 
 
 void Split::openFile(const QString& fileLocation) {
-    delete m_layout;
-
-    m_data->clear();
-
     const QUrl url(fileLocation);
     QString filePath;
-    if (url.isLocalFile()) {
+    if (url.isLocalFile()){
         filePath = QDir::toNativeSeparators(url.toLocalFile());
     } else {
         filePath = fileLocation;
     }
 
-    m_layout = LayoutParser::readLayout(filePath);
+    SplitLayout* newLayout = LayoutParser::readLayout(filePath);
+    if (newLayout == nullptr) return;
+
+    delete m_layout;
+    m_layout = newLayout;
+    m_data->clear();
+
     qDebug() << m_layout->gameName << Qt::endl;
-    if (m_layout == nullptr) return;
 
     for (int i = 0; i < m_layout->segments.size(); i++) {
         SplitSegment* segment = m_layout->segments.at(i);

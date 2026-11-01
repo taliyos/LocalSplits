@@ -143,7 +143,7 @@ MenuBar {
         footer: DialogButtonBox {
             Button{
                 text: "Create"
-                DialogButtonBox.buttonRole: DDialogButtonBox.AcceptRole
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
                 onClicked: split.raceManager.createRoom(sharedPauseCheck.checked)
             }
             Button{
